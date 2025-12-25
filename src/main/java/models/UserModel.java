@@ -8,11 +8,15 @@ import utils.observer.Observable;
 import utils.passwords.PasswordHasher;
 import validation.UserValidator;
 import validation.Validator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 public class UserModel extends Observable {
     private final DbUserRepo userRepo;
     private final Validator<User> userValidator;
+
     public UserModel(DbUserRepo repo) {
         this.userRepo=repo;
         this.userValidator = new UserValidator();
@@ -32,6 +36,28 @@ public class UserModel extends Observable {
             users.add(user);
         }
         return users;
+    }
+
+    public String mapIdsToUsernamesString(List<Long> ids) {
+        return ids.stream()
+                .map(this::findOne)          // returns Optional<User>
+                .filter(Optional::isPresent)
+                .map(optUser -> optUser.get().getUsername())
+                .collect(Collectors.joining(", "));
+    }
+
+    public ObservableList<User> mapIdsToUsers(List<Long> ids){
+        return FXCollections.observableArrayList(ids.stream()
+                .map(this::findOne)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toList());
+    }
+
+    public ObservableList<User> getAllUsersExcept(List<Long> exceptIds){
+        return FXCollections.observableArrayList(findAll().stream()
+                .filter(u->!exceptIds.contains(u.getId()))
+                .toList());
     }
 
     public ObservableList<User> findAll() {
@@ -64,6 +90,12 @@ public class UserModel extends Observable {
             throw new RuntimeException(e);
         }
     }
+
+    public int getPageCount(int usersPerPage){
+        int totalUsers =getTotalUsers();
+        return totalUsers/usersPerPage + (totalUsers % usersPerPage == 0 ? 0 : 1);
+    }
+
     public int getTotalUsers(){
         return userRepo.countUsers();
     }

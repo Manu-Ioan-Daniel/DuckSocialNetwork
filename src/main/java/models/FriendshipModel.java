@@ -28,6 +28,10 @@ public class FriendshipModel extends Observable {
         friendshipRepo.delete(id);
         notifyObservers();
     }
+    public void delete(Long id1,Long id2){
+        friendshipRepo.delete(new Tuple<>(Long.min(id1,id2),Long.max(id1,id2)));
+        notifyObservers();
+    }
     public List<Long> findFriendsOf(Long id){
         List<Long> friendIds = new ArrayList<>();
         for(Long friendId:friendshipRepo.findFriendsOf(id)){

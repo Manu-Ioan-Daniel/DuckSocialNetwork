@@ -215,6 +215,11 @@ public class DbUserRepo implements Repository<Long, User>{
         }
     }
 
+    @Override
+    public void update(User entity) {
+
+    }
+
 
     public int countUsers(){
         String sql = """

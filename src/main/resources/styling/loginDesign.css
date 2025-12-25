@@ -1,17 +1,19 @@
 .left-form{
-    -fx-background-color:linear-gradient(to bottom, #8B1BE4,#031AFC);
+    -fx-background-color: linear-gradient(to right, rgba(150,127,50,1) 20%, rgba(251,255,0,1) 100%);
     -fx-border-color: #000;
     -fx-border-width:2px;
 }
+
 .right-form{
     -fx-background-color: #FFFFFF;
     -fx-border-color: #000;
     -fx-border-width:2px 2px 2px 0px;
 }
+
 .text-field,
 .button{
     -fx-background-radius:4px;
-    -fx-border-color:linear-gradient(to bottom, #8B1BE4,#031AFC);
+    -fx-border-color: linear-gradient(to right, rgba(150,127,50,1) 20%, rgba(150,127,50,1) 20%);
     -fx-border-radius:4px;
     -fx-border-width:2px;
     -fx-background-color: linear-gradient(to bottom, #FFFFFF, #E0E0E0);
@@ -20,13 +22,16 @@
 .text-field:focused{
     -fx-background-color: transparent;
 }
+
 .button{
-    -fx-background-color: linear-gradient(to bottom, #8B1BE4,#031AFC);
+    -fx-background-color: linear-gradient(to right, rgba(150,127,50,1) 20%, rgba(251,255,0,1) 100%);
     -fx-border-color:black;
 }
+
 .button:hover{
-    -fx-background-color: linear-gradient(to bottom, #031AFC,#8B1BE4);
+    -fx-background-color: linear-gradient(to right, rgba(150,127,50,1) 20%, rgba(251,255,0,1) 100%);
 }
-.textfield-error{
+
+.text-field-error{
     -fx-border-color:red;
 }

@@ -114,15 +114,12 @@
                   <Insets />
                </VBox.margin>
             </Button>
-            <Button fx:id="signoutBtn" alignment="TOP_LEFT" maxWidth="-Infinity" mnemonicParsing="false" onAction="#handleSignout" text="Sign out" VBox.vgrow="ALWAYS">
+            <Button fx:id="signoutBtn" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSignout" prefHeight="42.0" text="Sign out" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
-               <font>
-                  <Font size="14.0" />
-               </font>
                <graphic>
-                  <ImageView fitHeight="72.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="27.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/logout.png" />
                      </image>

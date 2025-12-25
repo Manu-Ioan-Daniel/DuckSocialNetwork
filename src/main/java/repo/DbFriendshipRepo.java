@@ -134,4 +134,9 @@ public class DbFriendshipRepo implements Repository<Tuple<Long,Long>, Friendship
         }
     }
 
+    @Override
+    public void update(Friendship entity) {
+
+    }
+
 }

@@ -4,16 +4,16 @@ import domain.Duck;
 import domain.Person;
 import domain.User;
 import enums.DuckType;
-import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import models.UserModel;
 import utils.DraggableUtil;
+import utils.Models;
 import utils.StageManager;
+import validation.UiUtils;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -63,17 +63,16 @@ public class AddUserFormController implements Initializable {
     @FXML
     private ComboBox<String> typeComboBox;
 
-
     @FXML
     private TextField usernameField;
 
     private UserModel userModel;
-    private final StageManager errorAlertStageManager = new StageManager();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         duckFieldsVBox.setVisible(false);
         personFieldsVBox.setVisible(true);
+        this.userModel = Models.getUserModel();
         date.setValue(LocalDate.now());
         DraggableUtil.makeDraggable(root);
         initTypeComboBox();
@@ -100,16 +99,25 @@ public class AddUserFormController implements Initializable {
 
     @FXML
     public void handleAdd() {
-        boolean valid = checkInputs(usernameField,emailField,passwordField);
-        User user;
-        if(typeComboBox.getValue().equals("Duck")) {
-            valid &= checkInputs(speed,resistance);
-        }else{
-            valid &=checkInputs(name,surname,occupation);
-        }
-        if(!valid){
+        if(!validInput()){
             return;
         }
+        try {
+            userModel.save(getUser());
+            ((Stage)root.getScene().getWindow()).close();
+        }catch(Exception ex){
+            StageManager.showErrorAlert(ex.getMessage());
+        }
+    }
+
+    @FXML
+    public void handleClose() {
+        ((Stage) root.getScene().getWindow()).close();
+    }
+
+
+    private User getUser() {
+        User user;
         if(typeComboBox.getValue().equals("Duck")) {
             user = new Duck(
                     usernameField.getText(), emailField.getText(),passwordField.getText(),duckTypeComboBox.getValue(),
@@ -118,41 +126,17 @@ public class AddUserFormController implements Initializable {
             user = new Person(usernameField.getText(), emailField.getText(),passwordField.getText(),name.getText(),surname.getText(),
                     date.getValue(),occupation.getText(),(int)empathySlider.getValue());
         }
-        try {
-            userModel.save(user);
-            ((Stage)root.getScene().getWindow()).close();
-        }catch(Exception ex){
-            errorAlertStageManager.showErrorAlert(ex.getMessage());
-        }
+        return user;
     }
 
-    private boolean checkInputs(TextField... fields) {
-        boolean valid=true;
-        for(TextField field : fields) {
-            if(field.getText().isEmpty()){
-                showError(field);
-                valid=false;
-            }
-        }
-        return valid;
+    private boolean isDuck(){
+        return "Duck".equals(typeComboBox.getValue());
     }
 
-    private void showError(TextField field) {
-        if (!field.getStyleClass().contains("text-field-error")) {
-            field.getStyleClass().add("text-field-error");
-        }
-        PauseTransition pause = new PauseTransition(Duration.seconds(1));
-        pause.setOnFinished(e -> field.getStyleClass().remove("text-field-error"));
-        pause.play();
-    }
-
-    @FXML
-    public void handleClose() {
-        ((Stage) root.getScene().getWindow()).close();
-    }
-
-    public void setUserModel(UserModel userModel) {
-        this.userModel = userModel;
+    private boolean validInput() {
+        if (isDuck())
+            return UiUtils.checkInputs(usernameField, emailField, passwordField, speed, resistance);
+        return UiUtils.checkInputs(usernameField, emailField, passwordField, name, surname, occupation);
     }
 }
 
