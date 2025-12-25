@@ -1,6 +1,6 @@
 package controller;
-import domain.Duck;
 import domain.User;
+import enums.ChangeEvent;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -9,12 +9,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import models.FriendshipModel;
-import models.UserModel;
-import utils.Models;
+import service.UsersService;
+import utils.Services;
 import utils.StageManager;
 import utils.observer.Observer;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 
@@ -53,20 +53,22 @@ public class UsersFormController implements Observer, Initializable {
     @FXML
     private Pagination pagination;
 
-    private UserModel userModel;
-    private FriendshipModel friendshipModel;
+    private UsersService usersService;
+
+    private User currentUser;
 
     private final static int USERS_PER_PAGE = 3;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.userModel = Models.getUserModel();
-        userModel.addObserver(this);
-        this.friendshipModel = Models.getFriendshipModel();
+        this.usersService = Services.getUsersService();
+        usersService.addObserver(this);
+        Services.getFriendsService().addObserver(this);
     }
 
     public void initData(String username) {
         usernameLabel.setText(username);
+        usersService.getUser(usernameLabel.getText()).ifPresent(user -> currentUser = user);
         initUsersTable();
         loadLabelInfo();
         initPagination();
@@ -83,27 +85,22 @@ public class UsersFormController implements Observer, Initializable {
     private void initUsersTable() {
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        friendsColumn.setCellValueFactory(cell-> new SimpleStringProperty(
-                userModel.mapIdsToUsernamesString(friendshipModel.findFriendsOf(cell.getValue().getId()))));
-        typeColumn.setCellValueFactory(cell->
-                new SimpleStringProperty(cell.getValue() instanceof Duck ? "duck" : "person"));
+        friendsColumn.setCellValueFactory(cell-> new SimpleStringProperty(usersService.getFriendsToString(cell.getValue().getId())));
+        typeColumn.setCellValueFactory(cell-> new SimpleStringProperty(usersService.getType(cell.getValue())));
     }
 
     public void loadLabelInfo(){
-        userCount.setText(Integer.toString(userModel.getTotalUsers()));
-        duckCount.setText(Integer.toString(userModel.getTotalDucks()));
-        peopleCount.setText(Integer.toString(userModel.getTotalPeople()));
+        userCount.setText(Integer.toString(usersService.getTotalUsers()));
+        duckCount.setText(Integer.toString(usersService.getTotalDucks()));
+        peopleCount.setText(Integer.toString(usersService.getTotalPeople()));
     }
 
-    public void loadPaginationPageCount(){
-        pagination.setPageCount(userModel.getPageCount(USERS_PER_PAGE));
+    private void loadPaginationPageCount(){
+        pagination.setPageCount(usersService.getPageCount(USERS_PER_PAGE));
     }
 
     private void refreshUsersTable(int pageIndex){
-        usersTableView.setItems(userModel.findUsersFromPage(pageIndex, USERS_PER_PAGE));
-        if(!usersTableView.getSortOrder().contains(usernameColumn))
-            usersTableView.getSortOrder().add(usernameColumn);
-        usersTableView.sort();
+        usersTableView.setItems(usersService.findUsersFromPage(pageIndex, USERS_PER_PAGE));
     }
 
     @FXML
@@ -113,7 +110,7 @@ public class UsersFormController implements Observer, Initializable {
 
     public void signout(){
 
-        userModel.removeObserver(this);
+        removeObservers();
         Stage stage = (Stage) root.getScene().getWindow();
         StageManager.showLoginWindow(stage);
 
@@ -124,6 +121,7 @@ public class UsersFormController implements Observer, Initializable {
         StageManager.showAddUserWindow();
     }
 
+    @FXML
     public void handleDelete(){
         User selectedUser = usersTableView.getSelectionModel().getSelectedItem();
         if(selectedUser == null){
@@ -134,21 +132,36 @@ public class UsersFormController implements Observer, Initializable {
             StageManager.showErrorAlert("You cannot delete yourself!");
             return;
         }
-        userModel.delete(selectedUser.getId());
+        usersService.delete(selectedUser.getId());
     }
 
     public void handleFriends(){
-        userModel.removeObserver(this);
+        removeObservers();
         Stage  stage = (Stage) root.getScene().getWindow();
         StageManager.showFriendsWindow(stage,usernameLabel.getText());
 
     }
 
+    private void loadNotifications(){
+        if(Objects.equals(usersService.getLastFriendRequest().getId().getSecond(), currentUser.getId()))
+            StageManager.showInformationAlert("You have friend requests from: " + usersService.getFriendRequestsToString(currentUser.getId()));
+    }
+
+    private void removeObservers(){
+        usersService.removeObserver(this);
+        Services.getFriendsService().removeObserver(this);
+    }
+
     @Override
-    public void update(){
-        loadLabelInfo();
-        loadPaginationPageCount();
-        refreshUsersTable(pagination.getCurrentPageIndex());
+    public void update(ChangeEvent event){
+        if(ChangeEvent.SENT_FRIEND_REQUEST == event){
+            loadNotifications();
+        }
+        else {
+            loadLabelInfo();
+            loadPaginationPageCount();
+            refreshUsersTable(pagination.getCurrentPageIndex());
+        }
     }
 
 }

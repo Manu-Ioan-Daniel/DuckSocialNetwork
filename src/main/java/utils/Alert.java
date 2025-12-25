@@ -2,6 +2,7 @@ package utils;
 
 import controller.ConfirmationAlertController;
 import controller.ErrorAlertController;
+import controller.InformationAlertController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -46,6 +47,25 @@ public class Alert {
             stage.setScene(scene);
             stage.initStyle(StageStyle.TRANSPARENT);
 
+            return stage;
+        }catch(IOException e){
+            throw new RuntimeException(e);
+        }
+    }
+    public static Stage informationAlert(String message){
+        try {
+            FXMLLoader loader = new FXMLLoader(Alert.class.getResource("/view/informationAlert.fxml"));
+
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            scene.setFill(Color.TRANSPARENT);
+
+            InformationAlertController controller = loader.getController();
+            controller.setMessage(message);
+
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
             return stage;
         }catch(IOException e){
             throw new RuntimeException(e);

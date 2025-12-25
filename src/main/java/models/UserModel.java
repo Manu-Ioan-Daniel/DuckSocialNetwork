@@ -1,6 +1,7 @@
 package models;
 
 import domain.User;
+import enums.ChangeEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import repo.DbUserRepo;
@@ -71,12 +72,12 @@ public class UserModel extends Observable {
     public void save(User user) {
         userValidator.validate(user);
         userRepo.save(user);
-        notifyObservers();
+        notifyObservers(ChangeEvent.USER_DATA);
     }
 
     public void delete(Long id) {
        userRepo.delete(id);
-       notifyObservers();
+       notifyObservers(ChangeEvent.USER_DATA);
     }
 
     public boolean validLogin(String username,String password){

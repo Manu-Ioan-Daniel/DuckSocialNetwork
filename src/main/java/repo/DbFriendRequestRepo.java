@@ -113,7 +113,7 @@ public class DbFriendRequestRepo implements Repository<Tuple<Long,Long>,FriendRe
             ps.setLong(2,Long.max(id.getFirst(),id.getSecond()));
             ps.executeUpdate();
         }catch(SQLException e){
-            throw new RuntimeException(e);
+            throw new RepoException("Request does not exist!");
         }
     }
 

@@ -107,9 +107,6 @@ public class DbFriendshipRepo implements Repository<Tuple<Long,Long>, Friendship
             ps.executeUpdate();
 
         }catch(SQLException e){
-            if(e.getSQLState().equals("23505")){
-                throw new RepoException("You are already friends with this user!");
-            }
             throw new RuntimeException(e);
         }
     }

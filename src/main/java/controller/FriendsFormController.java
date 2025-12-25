@@ -2,6 +2,7 @@ package controller;
 
 import domain.FriendRequest;
 import domain.User;
+import enums.ChangeEvent;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,7 +14,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import service.FriendsService;
-import utils.Models;
 import utils.Services;
 import utils.StageManager;
 import utils.observer.Observer;
@@ -21,17 +21,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class FriendsFormController implements Initializable, Observer {
-    @FXML
-    private Button acceptBtn;
-
-    @FXML
-    private Button denyBtn;
 
     @FXML
     private Button friendReqBtn;
-
-    @FXML
-    private Button cancelBtn;
 
     @FXML
     private TableView<FriendRequest> toFriendReqTable;
@@ -149,7 +141,13 @@ public class FriendsFormController implements Initializable, Observer {
             StageManager.showErrorAlert("You did not select any friend to remove!");
             return;
         }
-        friendsService.deleteFriend(currentUser.getId(), friendsTable.getSelectionModel().getSelectedItem().getId());
+        try {
+            User user = friendsTable.getSelectionModel().getSelectedItem();
+            friendsService.deleteFriendRequest(currentUser.getId(),user.getId());
+            friendsService.deleteFriend(currentUser.getId(), user.getId());
+        }catch(Exception e){
+            StageManager.showErrorAlert(e.getMessage());
+        }
     }
 
     @FXML
@@ -161,6 +159,46 @@ public class FriendsFormController implements Initializable, Observer {
         User selectedUser = othersTable.getSelectionModel().getSelectedItem();
         try{
             friendsService.saveFriendRequest(currentUser.getId(), selectedUser.getId());
+        }catch (Exception e){
+            StageManager.showErrorAlert(e.getMessage());
+        }
+    }
+
+    @FXML
+    public void cancelFriendRequest(){
+        if(!validSelection(toFriendReqTable)){
+            StageManager.showErrorAlert("You did not select any friend request to cancel!");
+            return;
+        }
+        try {
+            friendsService.cancelFriendRequest(toFriendReqTable.getSelectionModel().getSelectedItem());
+        }catch (Exception e){
+            StageManager.showErrorAlert(e.getMessage());
+        }
+    }
+
+    @FXML
+    public void acceptFriendRequest(){
+        if(!validSelection(fromFriendReqTable)){
+            StageManager.showErrorAlert("You did not select any friend request to accept!");
+            return;
+        }
+        try {
+            friendsService.acceptFriendRequest(fromFriendReqTable.getSelectionModel().getSelectedItem());
+        }catch (Exception e){
+            StageManager.showErrorAlert(e.getMessage());
+        }
+
+    }
+
+    @FXML
+    public void denyFriendRequest(){
+        if(!validSelection(fromFriendReqTable)){
+            StageManager.showErrorAlert("You did not select any friend request to deny!");
+            return;
+        }
+        try {
+            friendsService.denyFriendRequest(fromFriendReqTable.getSelectionModel().getSelectedItem());
         }catch (Exception e){
             StageManager.showErrorAlert(e.getMessage());
         }
@@ -189,7 +227,7 @@ public class FriendsFormController implements Initializable, Observer {
     }
 
     @Override
-    public void update(){
+    public void update(ChangeEvent event){
         refreshFriendsTable();
         refreshOthersTable();
         refreshToFriendReqTable();

@@ -1,5 +1,7 @@
 package utils.observer;
 
+import enums.ChangeEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +13,9 @@ public class Observable {
     public void removeObserver(Observer observer){
         observers.remove(observer);
     }
-    public void notifyObservers(){
+    public void notifyObservers(ChangeEvent event){
         for(Observer observer:observers){
-            observer.update();
+            observer.update(event);
         }
     }
 }

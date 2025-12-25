@@ -45,6 +45,9 @@ public class StageManager {
     public static void showConfirmationAlert(Runnable action) {
         showStageOnce("confirmationAlert",()->Alert.confirmationAlert(action));
     }
+    public static void showInformationAlert(String message){
+        showStageReplace("informationAlert",()->Alert.informationAlert(message));
+    }
     public static void showLoginWindow(Stage stage){
         Tuple<Scene, LoginController> tuple = FXMLUtil.load(("/view/loginWindow.fxml"));
 

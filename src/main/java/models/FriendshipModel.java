@@ -1,6 +1,7 @@
 package models;
 
 import domain.Friendship;
+import enums.ChangeEvent;
 import repo.DbFriendshipRepo;
 import utils.Tuple;
 import utils.observer.Observable;
@@ -22,15 +23,15 @@ public class FriendshipModel extends Observable {
     }
     public void save(Friendship friendship){
         friendshipRepo.save(friendship);
-        notifyObservers();
+        notifyObservers(ChangeEvent.FRIENDSHIP_DATA);
     }
     public void delete(Tuple<Long,Long> id){
         friendshipRepo.delete(id);
-        notifyObservers();
+        notifyObservers(ChangeEvent.FRIENDSHIP_DATA);
     }
     public void delete(Long id1,Long id2){
         friendshipRepo.delete(new Tuple<>(Long.min(id1,id2),Long.max(id1,id2)));
-        notifyObservers();
+        notifyObservers(ChangeEvent.FRIENDSHIP_DATA);
     }
     public List<Long> findFriendsOf(Long id){
         List<Long> friendIds = new ArrayList<>();

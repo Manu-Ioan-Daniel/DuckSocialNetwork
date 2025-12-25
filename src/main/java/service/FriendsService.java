@@ -2,11 +2,14 @@ package service;
 
 import domain.FriendRequest;
 import domain.User;
+import enums.ChangeEvent;
+import exceptions.ServiceException;
 import javafx.collections.ObservableList;
 import models.FriendRequestModel;
 import models.FriendshipModel;
 import models.UserModel;
-import utils.FriendRequestFactory;
+import utils.factories.FriendRequestFactory;
+import utils.factories.FriendShipFactory;
 import utils.observer.Observable;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,10 +46,12 @@ public class FriendsService extends Observable {
         List<Long> ids = new ArrayList<>(friendshipModel.findFriendsOf(currentUserId));
         ids.add(currentUserId);
         for(FriendRequest fr : friendRequestModel.findSentFriendRequests(currentUserId)){
-            ids.add(fr.getId().getSecond());
+            if(fr.getStatus().equals("pending"))
+                ids.add(fr.getId().getSecond());
         }
         for(FriendRequest fr : friendRequestModel.findFriendRequestsOf(currentUserId)){
-            ids.add(fr.getId().getFirst());
+            if(fr.getStatus().equals("pending"))
+                ids.add(fr.getId().getFirst());
         }
         return userModel.getAllUsersExcept(ids);
     }
@@ -60,12 +65,60 @@ public class FriendsService extends Observable {
     }
 
     public void deleteFriend(Long currentUserId, Long friendId) {
+
         friendshipModel.delete(currentUserId, friendId);
-        notifyObservers();
+        notifyObservers(ChangeEvent.FRIENDSHIP_DATA);
     }
 
     public void saveFriendRequest(Long currentUserId, Long targetId) {
+        Optional<FriendRequest> fr = friendRequestModel.findOne(currentUserId, targetId);
+        FriendRequest fr2 = FriendRequestFactory.getInstance().createFriendRequest(currentUserId, targetId, "pending");
+        if(fr.isPresent() && !fr.get().getStatus().equals("pending")) {
+            if(fr.get().getId().getFirst().equals(currentUserId)) {
+                friendRequestModel.update(fr2);
+                friendRequestModel.setLastFriendRequestSaved(fr2);
+                notifyObservers(ChangeEvent.SENT_FRIEND_REQUEST);
+                return;
+            }
+            friendRequestModel.delete(currentUserId, targetId);
+            friendRequestModel.save(fr2);
+            friendRequestModel.setLastFriendRequestSaved(fr2);
+            notifyObservers(ChangeEvent.SENT_FRIEND_REQUEST);
+            return;
+        }
         friendRequestModel.save(FriendRequestFactory.getInstance().createFriendRequest(currentUserId, targetId, "pending"));
-        notifyObservers();
+        friendRequestModel.setLastFriendRequestSaved(fr2);
+        notifyObservers(ChangeEvent.SENT_FRIEND_REQUEST);
+    }
+
+    public void cancelFriendRequest(FriendRequest fr) {
+        if(!fr.getStatus().equals("pending")){
+            throw new ServiceException("You cannot cancel friend requests that are not pending!");
+        }
+        friendRequestModel.delete(fr.getId().getSecond(), fr.getId().getFirst());
+        notifyObservers(ChangeEvent.FRIEND_REQUEST_DATA);
+    }
+
+    public void acceptFriendRequest(FriendRequest fr) {
+        if(!fr.getStatus().equals("pending")){
+            throw new ServiceException("You cannot accept friend requests that are not pending!");
+        }
+        fr.setStatus("accepted");
+        friendRequestModel.update(fr);
+        friendshipModel.save(FriendShipFactory.getInstance().createFriendShip(fr.getId().getFirst(), fr.getId().getSecond()));
+        notifyObservers(ChangeEvent.FRIEND_REQUEST_DATA);
+    }
+
+    public void denyFriendRequest(FriendRequest fr) {
+        if(!fr.getStatus().equals("pending")){
+            throw new ServiceException("You cannot deny friend requests that are not pending!");
+        }
+        fr.setStatus("denied");
+        friendRequestModel.update(fr);
+        notifyObservers(ChangeEvent.FRIEND_REQUEST_DATA);
+    }
+    public void deleteFriendRequest(Long id1, Long id2) {
+        friendRequestModel.delete(id1, id2);
+        notifyObservers(ChangeEvent.FRIEND_REQUEST_DATA);
     }
 }
