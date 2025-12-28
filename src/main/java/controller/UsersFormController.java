@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import service.UsersService;
 import utils.Services;
 import utils.StageManager;
+import utils.observer.NotificationHandler;
 import utils.observer.Observer;
 import java.net.URL;
 import java.util.Objects;
@@ -62,8 +63,7 @@ public class UsersFormController implements Observer, Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.usersService = Services.getUsersService();
-        usersService.addObserver(this);
-        Services.getFriendsService().addObserver(this);
+        NotificationHandler.getInstance().addObserver(this);
     }
 
     public void initData(String username) {
@@ -135,11 +135,16 @@ public class UsersFormController implements Observer, Initializable {
         usersService.delete(selectedUser.getId());
     }
 
-    public void handleFriends(){
+    public void handleFriendsWindow(){
         removeObservers();
         Stage  stage = (Stage) root.getScene().getWindow();
         StageManager.showFriendsWindow(stage,usernameLabel.getText());
+    }
 
+    public void handleChatWindow(){
+        removeObservers();
+        Stage  stage = (Stage) root.getScene().getWindow();
+        StageManager.showChatWindow(stage,usernameLabel.getText());
     }
 
     private void loadNotifications(){
@@ -148,8 +153,7 @@ public class UsersFormController implements Observer, Initializable {
     }
 
     private void removeObservers(){
-        usersService.removeObserver(this);
-        Services.getFriendsService().removeObserver(this);
+        NotificationHandler.getInstance().removeObserver(this);
     }
 
     @Override

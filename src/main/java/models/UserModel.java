@@ -5,6 +5,7 @@ import enums.ChangeEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import repo.DbUserRepo;
+import utils.observer.NotificationHandler;
 import utils.observer.Observable;
 import utils.passwords.PasswordHasher;
 import validation.UserValidator;
@@ -21,6 +22,7 @@ public class UserModel extends Observable {
     public UserModel(DbUserRepo repo) {
         this.userRepo=repo;
         this.userValidator = new UserValidator();
+        this.addObserver(NotificationHandler.getInstance());
     }
     public Optional<User> findOne(Long id) {
         return userRepo.findOne(id);
@@ -93,7 +95,7 @@ public class UserModel extends Observable {
     }
 
     public int getPageCount(int usersPerPage){
-        int totalUsers =getTotalUsers();
+        int totalUsers = getTotalUsers();
         return totalUsers/usersPerPage + (totalUsers % usersPerPage == 0 ? 0 : 1);
     }
 

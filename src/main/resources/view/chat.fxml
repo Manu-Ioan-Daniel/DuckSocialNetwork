@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="761.0" prefWidth="1204.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ChatController">
+    <top>
+        <HBox styleClass="top-form" stylesheets="@../styling/dashboardDesign.css" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets />
+            </BorderPane.margin>
+            <children>
+                <ImageView fitHeight="28.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../images/userIcon.png" />
+                    </image>
+                    <HBox.margin>
+                        <Insets left="20.0" />
+                    </HBox.margin>
+                </ImageView>
+                <Label text="User Management System">
+                    <font>
+                        <Font size="22.0" />
+                    </font>
+                    <HBox.margin>
+                        <Insets left="8.0" />
+                    </HBox.margin>
+                </Label>
+            </children>
+            <opaqueInsets>
+                <Insets />
+            </opaqueInsets>
+            <padding>
+                <Insets top="15.0" />
+            </padding>
+        </HBox>
+    </top>
+    <left>
+        <VBox alignment="CENTER_LEFT" prefHeight="732.0" prefWidth="260.0" spacing="10.0" styleClass="left-form" stylesheets="@../styling/dashboardDesign.css" BorderPane.alignment="CENTER_LEFT">
+            <children>
+                <ImageView fitHeight="144.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+                    <image>
+                        <Image url="@../images/userIcon2.png" />
+                    </image>
+                    <VBox.margin>
+                        <Insets bottom="50.0" />
+                    </VBox.margin>
+                </ImageView>
+                <Label maxWidth="1.7976931348623157E308" text="Welcome," textFill="WHITE" VBox.vgrow="ALWAYS">
+                    <font>
+                        <Font name="Impact" size="21.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets left="10.0" />
+                    </VBox.margin>
+                </Label>
+                <Label fx:id="usernameLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="&lt;username&gt;" textFill="WHITE" VBox.vgrow="ALWAYS">
+                    <font>
+                        <Font name="System Bold" size="31.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
+                </Label>
+                <Line endX="100.0" startX="-130.0" stroke="WHITE" strokeWidth="4.0" VBox.vgrow="ALWAYS">
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin></Line>
+                <Button fx:id="usersBtn" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleUsersWindow" stylesheets="@../styling/dashboardDesign.css" text="Users" VBox.vgrow="ALWAYS">
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
+                    <graphic>
+                        <ImageView fitHeight="55.0" fitWidth="29.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../images/notes.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleFriendsWindow" text="Friends" VBox.vgrow="ALWAYS">
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
+                    <graphic>
+                        <ImageView fitHeight="33.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../images/add-user.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="chatBtn" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="side-buttons" text="Chat">
+                    <graphic>
+                        <ImageView fitHeight="33.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../images/chat.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
+                </Button>
+                <Button alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSignout" prefHeight="42.0" text="Sign out" VBox.vgrow="ALWAYS">
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
+                    <graphic>
+                        <ImageView fitHeight="27.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../images/logout.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </children>
+            <BorderPane.margin>
+                <Insets />
+            </BorderPane.margin>
+            <padding>
+                <Insets left="10.0" right="10.0" />
+            </padding>
+        </VBox>
+    </left>
+   <center>
+      <HBox prefHeight="737.0" prefWidth="944.0" stylesheets="@../styling/chatDesign.css" BorderPane.alignment="CENTER">
+         <children>
+            <VBox fx:id="usernamesBox" minWidth="184.0" prefHeight="714.0" prefWidth="184.0" spacing="20.0" styleClass="usernames-bar">
+               <children>
+                  <HBox alignment="CENTER" spacing="10.0">
+                     <children>
+                        <ImageView fitHeight="61.0" fitWidth="58.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/userIcon3.png" />
+                           </image>
+                        </ImageView>
+                        <Label maxWidth="1.7976931348623157E308" text="Username1" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </HBox>
+                  <HBox alignment="CENTER" layoutX="20.0" layoutY="10.0" spacing="10.0">
+                     <children>
+                        <ImageView fitHeight="61.0" fitWidth="58.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/userIcon3.png" />
+                           </image>
+                        </ImageView>
+                        <Label maxWidth="1.7976931348623157E308" text="Username1" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </HBox>
+                  <HBox alignment="CENTER" layoutX="20.0" layoutY="106.0" spacing="10.0">
+                     <children>
+                        <ImageView fitHeight="61.0" fitWidth="58.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/userIcon3.png" />
+                           </image>
+                        </ImageView>
+                        <Label maxWidth="1.7976931348623157E308" text="Username1" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets left="10.0" right="10.0" />
+               </padding>
+            </VBox>
+            <Separator orientation="VERTICAL" prefHeight="200.0" />
+            <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </HBox.margin>
+               <children>
+                  <VBox fx:id="messagesBox" spacing="10.0" stylesheets="@../styling/chatDesign.css" />
+                  <HBox alignment="BOTTOM_CENTER" spacing="5.0" styleClass="bottom-bar" VBox.vgrow="ALWAYS">
+                     <children>
+                        <TextField fx:id="messageField" prefHeight="40.0" promptText="Write a message ...." HBox.hgrow="ALWAYS">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextField>
+                        <Button fx:id="sendBtn" defaultButton="true" mnemonicParsing="false" onAction="#sendMessage" prefHeight="40.0" prefWidth="80.0" text="Send" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="20.0" />
+                     </VBox.margin>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </center>
+</BorderPane>

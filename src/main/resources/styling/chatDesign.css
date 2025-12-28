@@ -1,0 +1,49 @@
+.usernames-bar .label{
+    -fx-font-size: 18px;
+}
+.usernames-bar HBox{
+    -fx-background-radius:10px;
+}
+.usernames-bar HBox:hover{
+    -fx-background-color:#ddd;
+    -fx-cursor:hand;
+}
+.usernames-bar HBox.selected{
+    -fx-border-color:darkgoldenrod;
+    -fx-border-radius:10px;
+}
+.received-message{
+    -fx-background-color:gray;
+    -fx-background-radius:10px;
+}
+.received-message .label{
+    -fx-text-fill:white;
+    -fx-font-size:16px;
+}
+
+.sent-message{
+    -fx-background-color:darkgoldenrod;
+    -fx-background-radius:10px;
+}
+.sent-message .label{
+    -fx-text-fill:white;
+    -fx-text-alignment:left;
+    -fx-wrap-text:true;
+    -fx-font-size:16px;
+}
+.sent-message .time-label,
+.received-message .time-label{
+    -fx-font-size:12px;
+}
+VBox HBox .label{
+    -fx-font-size:20px;
+}
+.bottom-bar .text-field,
+.button{
+    -fx-border-radius:10px;
+    -fx-border-color:#d18306;
+    -fx-background-radius:10px;
+}
+.bottom-bar .button{
+    -fx-background-color : linear-gradient(to bottom,#d18306,#f2d305);
+}

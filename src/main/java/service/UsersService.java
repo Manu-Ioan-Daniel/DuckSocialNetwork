@@ -10,10 +10,11 @@ import models.FriendRequestModel;
 import models.FriendshipModel;
 import models.UserModel;
 import utils.observer.Observable;
+import utils.observer.Observer;
 
 import java.util.Optional;
 
-public class UsersService extends Observable {
+public class UsersService{
     private final UserModel userModel;
     private final FriendshipModel friendshipModel;
     private final FriendRequestModel friendRequestModel;
@@ -36,15 +37,17 @@ public class UsersService extends Observable {
     }
 
     public String getType(User user) {
-        return user instanceof Duck ? "duck" : "user";
+        return user instanceof Duck ? "duck" : "person";
     }
 
     public int getTotalUsers() {
         return userModel.getTotalUsers();
     }
+
     public int getTotalDucks() {
         return userModel.getTotalDucks();
     }
+
     public int getTotalPeople() {
         return userModel.getTotalPeople();
     }
@@ -59,7 +62,6 @@ public class UsersService extends Observable {
 
     public void delete(Long id) {
         userModel.delete(id);
-        notifyObservers(ChangeEvent.USER_DATA);
     }
 
     public String getFriendRequestsToString(Long id) {
@@ -75,4 +77,5 @@ public class UsersService extends Observable {
     public FriendRequest getLastFriendRequest() {
         return friendRequestModel.getLastFriendRequest();
     }
+
 }

@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import service.FriendsService;
 import utils.Services;
 import utils.StageManager;
+import utils.observer.NotificationHandler;
 import utils.observer.Observer;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -71,7 +72,7 @@ public class FriendsFormController implements Initializable, Observer {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.friendsService = Services.getFriendsService();
-        friendsService.addObserver(this);
+        NotificationHandler.getInstance().addObserver(this);
     }
 
     public void initData(String username){
@@ -210,16 +211,22 @@ public class FriendsFormController implements Initializable, Observer {
     }
 
     private void signout() {
-        friendsService.removeObserver(this);
+        NotificationHandler.getInstance().removeObserver(this);
         Stage stage = (Stage) root.getScene().getWindow();
         StageManager.showLoginWindow(stage);
     }
 
     @FXML
     public void handleUsersWindow(){
-        friendsService.removeObserver(this);
+        NotificationHandler.getInstance().removeObserver(this);
         Stage stage = (Stage) root.getScene().getWindow();
         StageManager.showUsersWindow(stage,usernameLabel.getText());
+    }
+
+    public void handleChatWindow(){
+        NotificationHandler.getInstance().removeObserver(this);
+        Stage  stage = (Stage) root.getScene().getWindow();
+        StageManager.showChatWindow(stage,usernameLabel.getText());
     }
 
     private boolean validSelection(TableView<?> tableView){

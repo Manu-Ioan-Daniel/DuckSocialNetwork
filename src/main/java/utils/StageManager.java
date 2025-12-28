@@ -1,9 +1,6 @@
 package utils;
 
-import controller.AddUserFormController;
-import controller.FriendsFormController;
-import controller.LoginController;
-import controller.UsersFormController;
+import controller.*;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -78,5 +75,12 @@ public class StageManager {
             stage.initStyle(StageStyle.UNDECORATED);
             return stage;
         });
+    }
+
+    public static void showChatWindow(Stage stage, String username) {
+        Tuple<Scene, ChatController> tuple = FXMLUtil.load("/view/chat.fxml");
+        tuple.getSecond().initData(username);
+        stage.setScene(tuple.getFirst());
+        stage.centerOnScreen();
     }
 }

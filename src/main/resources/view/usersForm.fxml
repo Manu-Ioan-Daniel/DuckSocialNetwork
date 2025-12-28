@@ -90,7 +90,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="friendsBtn" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleFriends" text="Friends" VBox.vgrow="ALWAYS">
+            <Button fx:id="friendsBtn" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleFriendsWindow" text="Friends" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
@@ -102,7 +102,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="chatBtn" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Chat">
+            <Button fx:id="chatBtn" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleChatWindow" text="Chat">
                <graphic>
                   <ImageView fitHeight="33.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
                      <image>

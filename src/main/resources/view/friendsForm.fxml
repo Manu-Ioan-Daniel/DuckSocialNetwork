@@ -101,7 +101,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="chatBtn" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Chat">
+            <Button fx:id="chatBtn" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleChatWindow" text="Chat">
                <graphic>
                   <ImageView fitHeight="33.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
                      <image>

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class FriendsService extends Observable {
+public class FriendsService{
     private final UserModel userModel;
     private final FriendRequestModel friendRequestModel;
     private final FriendshipModel friendshipModel;
@@ -65,9 +65,7 @@ public class FriendsService extends Observable {
     }
 
     public void deleteFriend(Long currentUserId, Long friendId) {
-
         friendshipModel.delete(currentUserId, friendId);
-        notifyObservers(ChangeEvent.FRIENDSHIP_DATA);
     }
 
     public void saveFriendRequest(Long currentUserId, Long targetId) {
@@ -76,19 +74,13 @@ public class FriendsService extends Observable {
         if(fr.isPresent() && !fr.get().getStatus().equals("pending")) {
             if(fr.get().getId().getFirst().equals(currentUserId)) {
                 friendRequestModel.update(fr2);
-                friendRequestModel.setLastFriendRequestSaved(fr2);
-                notifyObservers(ChangeEvent.SENT_FRIEND_REQUEST);
                 return;
             }
             friendRequestModel.delete(currentUserId, targetId);
             friendRequestModel.save(fr2);
-            friendRequestModel.setLastFriendRequestSaved(fr2);
-            notifyObservers(ChangeEvent.SENT_FRIEND_REQUEST);
             return;
         }
         friendRequestModel.save(FriendRequestFactory.getInstance().createFriendRequest(currentUserId, targetId, "pending"));
-        friendRequestModel.setLastFriendRequestSaved(fr2);
-        notifyObservers(ChangeEvent.SENT_FRIEND_REQUEST);
     }
 
     public void cancelFriendRequest(FriendRequest fr) {
@@ -96,7 +88,6 @@ public class FriendsService extends Observable {
             throw new ServiceException("You cannot cancel friend requests that are not pending!");
         }
         friendRequestModel.delete(fr.getId().getSecond(), fr.getId().getFirst());
-        notifyObservers(ChangeEvent.FRIEND_REQUEST_DATA);
     }
 
     public void acceptFriendRequest(FriendRequest fr) {
@@ -106,7 +97,6 @@ public class FriendsService extends Observable {
         fr.setStatus("accepted");
         friendRequestModel.update(fr);
         friendshipModel.save(FriendShipFactory.getInstance().createFriendShip(fr.getId().getFirst(), fr.getId().getSecond()));
-        notifyObservers(ChangeEvent.FRIEND_REQUEST_DATA);
     }
 
     public void denyFriendRequest(FriendRequest fr) {
@@ -115,10 +105,8 @@ public class FriendsService extends Observable {
         }
         fr.setStatus("denied");
         friendRequestModel.update(fr);
-        notifyObservers(ChangeEvent.FRIEND_REQUEST_DATA);
     }
     public void deleteFriendRequest(Long id1, Long id2) {
         friendRequestModel.delete(id1, id2);
-        notifyObservers(ChangeEvent.FRIEND_REQUEST_DATA);
     }
 }

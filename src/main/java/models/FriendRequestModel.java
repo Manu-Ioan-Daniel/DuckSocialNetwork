@@ -1,4 +1,5 @@
 package models;
+
 import domain.FriendRequest;
 import enums.ChangeEvent;
 import exceptions.ValidationException;
@@ -6,8 +7,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import repo.DbFriendRequestRepo;
 import utils.Tuple;
+import utils.observer.NotificationHandler;
 import utils.observer.Observable;
-
 import java.util.Optional;
 
 
@@ -17,12 +18,15 @@ public class FriendRequestModel extends Observable {
     private FriendRequest lastFriendRequestSaved;
 
     public FriendRequestModel(DbFriendRequestRepo friendRequestRepo) {
+
         this.friendRequestRepo = friendRequestRepo;
+        this.addObserver(NotificationHandler.getInstance());
     }
 
     public Optional<FriendRequest> findOne(Long id1, Long id2){
         return friendRequestRepo.findOne(new Tuple<>(id1,id2));
     }
+
     public ObservableList<FriendRequest> findAll(){
         ObservableList<FriendRequest> list = FXCollections.observableArrayList();
         for(FriendRequest fr:friendRequestRepo.findAll()){
@@ -49,6 +53,7 @@ public class FriendRequestModel extends Observable {
 
     public void save(FriendRequest friendRequest){
         friendRequestRepo.save(friendRequest);
+        lastFriendRequestSaved = friendRequest;
         notifyObservers(ChangeEvent.SENT_FRIEND_REQUEST);
     }
     public void delete(Long id1, Long id2){
@@ -60,14 +65,16 @@ public class FriendRequestModel extends Observable {
     }
     public void update(FriendRequest friendRequest){
         friendRequestRepo.update(friendRequest);
-        notifyObservers(ChangeEvent.USER_DATA);
+        if(friendRequest.getStatus().equals("pending")){
+            lastFriendRequestSaved = friendRequest;
+            notifyObservers(ChangeEvent.SENT_FRIEND_REQUEST);
+            return;
+        }
+        notifyObservers(ChangeEvent.FRIEND_REQUEST_DATA);
     }
 
     public FriendRequest getLastFriendRequest() {
         return lastFriendRequestSaved;
     }
 
-    public void setLastFriendRequestSaved(FriendRequest lastFriendRequestSaved) {
-        this.lastFriendRequestSaved = lastFriendRequestSaved;
-    }
 }

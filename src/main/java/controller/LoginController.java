@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import models.UserModel;
 import utils.Models;
 import utils.StageManager;
-import validation.UiUtils;
+import utils.UiUtils;
 import java.net.URL;
 import java.util.ResourceBundle;
 
