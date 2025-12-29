@@ -7,7 +7,7 @@
 .left-form{
     -fx-background-color: linear-gradient(to left, rgba(140,115,40,1) 20%, rgba(240,245,0,1) 100%);
     -fx-border-color : #000;
-    -fx-border-width : 2.5px;
+    -fx-border-width : 3px;
 }
 
 .button{

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MessageModel extends Observable {
-    private DbMessageRepo messageRepo;
+    private final DbMessageRepo messageRepo;
     public MessageModel(DbMessageRepo messageRepo) {
         this.messageRepo = messageRepo;
         this.addObserver(NotificationHandler.getInstance());

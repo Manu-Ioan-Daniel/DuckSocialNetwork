@@ -2,7 +2,6 @@ package service;
 
 import domain.FriendRequest;
 import domain.User;
-import enums.ChangeEvent;
 import exceptions.ServiceException;
 import javafx.collections.ObservableList;
 import models.FriendRequestModel;
@@ -10,7 +9,6 @@ import models.FriendshipModel;
 import models.UserModel;
 import utils.factories.FriendRequestFactory;
 import utils.factories.FriendShipFactory;
-import utils.observer.Observable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

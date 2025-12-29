@@ -1,16 +1,12 @@
 package service;
 
 import domain.Duck;
-import domain.Entity;
 import domain.FriendRequest;
 import domain.User;
-import enums.ChangeEvent;
 import javafx.collections.ObservableList;
 import models.FriendRequestModel;
 import models.FriendshipModel;
 import models.UserModel;
-import utils.observer.Observable;
-import utils.observer.Observer;
 
 import java.util.Optional;
 
@@ -66,11 +62,9 @@ public class UsersService{
 
     public String getFriendRequestsToString(Long id) {
         StringBuilder stringBuilder = new StringBuilder();
-        friendRequestModel.findFriendRequestsOf(id).forEach(friendRequest -> {
-            userModel.findOne(friendRequest.getId().getFirst()).ifPresent(user -> {
-                stringBuilder.append(user.getUsername()).append("\n");
-            });
-        });
+        friendRequestModel.findFriendRequestsOf(id).forEach(friendRequest ->
+            userModel.findOne(friendRequest.getId().getFirst()).ifPresent(user -> stringBuilder.append(user.getUsername()).append("\n"))
+        );
         return stringBuilder.toString();
     }
 

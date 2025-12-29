@@ -27,13 +27,13 @@ public class FriendRequestModel extends Observable {
         return friendRequestRepo.findOne(new Tuple<>(id1,id2));
     }
 
-    public ObservableList<FriendRequest> findAll(){
-        ObservableList<FriendRequest> list = FXCollections.observableArrayList();
-        for(FriendRequest fr:friendRequestRepo.findAll()){
-            list.add(fr);
-        }
-        return list;
-    }
+//    public ObservableList<FriendRequest> findAll(){
+//        ObservableList<FriendRequest> list = FXCollections.observableArrayList();
+//        for(FriendRequest fr:friendRequestRepo.findAll()){
+//            list.add(fr);
+//        }
+//        return list;
+//    }
 
     public ObservableList<FriendRequest> findFriendRequestsOf(Long id){
         ObservableList<FriendRequest> list = FXCollections.observableArrayList();

@@ -9,11 +9,6 @@ public class ReplyMessage extends Message{
         super(message, dateTime, fromId, toId);
         this.replyMessageId = replyMessageId;
     }
-    public ReplyMessage(Message message){
-        super(message.getMessage(), LocalDateTime.now(), message.getToId(), message.getFromId());
-        this.replyMessageId = message.getId();
-    }
-
 
     public Long getReplyMessageId() {
         return replyMessageId;

@@ -77,7 +77,7 @@ public class FriendsFormController implements Initializable, Observer {
 
     public void initData(String username){
         usernameLabel.setText(username);
-        friendsService.getUser(username).ifPresent(user -> {currentUser=user;});
+        friendsService.getUser(username).ifPresent(user -> currentUser=user);
         initFriendsTable();
         initOthersTable();
         initToFriendReqTable();

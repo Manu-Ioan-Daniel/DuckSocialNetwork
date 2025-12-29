@@ -4,7 +4,7 @@ import javafx.scene.Node;
 import javafx.stage.Stage;
 
 public class DraggableUtil {
-    private DraggableUtil(){};
+    private DraggableUtil(){}
     public static void makeDraggable(Node node){
         final Delta dragDelta = new Delta();
         node.sceneProperty().addListener((observable, oldScene, newScene) -> {

@@ -20,7 +20,7 @@ public class PasswordHasher {
         }
     }
 
-    public static boolean verifyPassword(String passwordAttempt, String storedHash) throws Exception{
+    public static boolean verifyPassword(String passwordAttempt, String storedHash){
         String[] parts = storedHash.split(":");
         byte[] salt = base64ToByte(parts[0]);
         byte[] hash = base64ToByte(parts[1]);

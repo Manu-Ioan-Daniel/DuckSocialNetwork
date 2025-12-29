@@ -1,7 +1,6 @@
 package controller;
 
 import domain.Message;
-import domain.ReplyMessage;
 import enums.ChangeEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
