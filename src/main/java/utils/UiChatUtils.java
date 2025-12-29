@@ -13,6 +13,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class UiChatUtils {
 
@@ -83,17 +84,30 @@ public class UiChatUtils {
         return box;
     }
 
-    private static StackPane createMessageRow(ChatMessageItem cm) {
+    private static StackPane createMessageRow(ChatMessageItem cm, Consumer<Message> consumer) {
 
         StackPane pane = new StackPane();
         pane.setAlignment(Pos.CENTER_LEFT);
         VBox.setMargin(pane, cm.isMine() ?  new Insets(0,35,0,40) : new Insets(0,0,0,40));
         pane.setPadding(new Insets(0,5,0,5));
 
-        Label message = new Label(cm.message().getMessage());
-        StackPane.setMargin(message,new Insets(0,35,0,0));
-        pane.getChildren().add(message);
 
+        Label message = new Label(cm.message().getMessage());
+        message.setOnMouseClicked(e->{
+            if(e.getClickCount() == 2){
+                consumer.accept(cm.message());
+            }
+        });
+
+        VBox box = new VBox();
+        if(cm instanceof ChatReplyMessageItem cr){
+            Label reply = new Label(cr.replyMessage());
+            reply.getStyleClass().add("reply");
+            box.getChildren().add(reply);
+        }
+        box.getChildren().add(message);
+        pane.getChildren().add(box);
+        StackPane.setMargin(box,new Insets(0,35,0,0));
         Label time = new Label(cm.message().getDateTime().format(DateTimeFormatter.ofPattern("HH:mm")));
         time.getStyleClass().add("time-label");
         StackPane.setAlignment(time,Pos.BOTTOM_RIGHT);
@@ -104,17 +118,19 @@ public class UiChatUtils {
         return pane;
     }
 
-    public static void renderMessages(VBox messagesBox, List<ChatItem> chatItems) {
+    public static void renderMessages(VBox messagesBox, List<ChatItem> chatItems, Consumer<Message> consumer) {
         VBox chatBox = null;
         for(ChatItem chatItem : chatItems){
             if(chatItem instanceof ChatHeaderItem ch){
                 chatBox = createChatBox(ch);
                 messagesBox.getChildren().add(chatBox);
             }else if (chatItem instanceof ChatMessageItem cm && chatBox != null) {
-                chatBox.getChildren().add(createMessageRow(cm));
+                chatBox.getChildren().add(createMessageRow(cm,consumer));
             }
         }
     }
+
+
 
 
 }

@@ -1,8 +1,11 @@
 package controller;
 
+import domain.Message;
+import domain.ReplyMessage;
 import enums.ChangeEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -32,11 +35,20 @@ public class ChatController implements Observer {
     @FXML
     private TextField messageField;
 
+    @FXML
+    private ScrollPane messagesScrollPane;
+
+    @FXML
+    private Label replyMessageLabel;
+
+
+    private Message repliedToMessage;
     private final ChatService chatService = Services.getChatService();
 
     public void initData(String username) {
         usernameLabel.setText(username);
         NotificationHandler.getInstance().addObserver(this);
+        messagesScrollPane.vvalueProperty().bind(messagesBox.heightProperty());
         loadUsernames();
     }
 
@@ -47,7 +59,8 @@ public class ChatController implements Observer {
     }
     private void loadConversation(){
         messagesBox.getChildren().clear();
-        UiChatUtils.renderMessages(messagesBox,chatService.buildChatItems(usernameLabel.getText(),getSelectedUsername()));
+        UiChatUtils.renderMessages(messagesBox,chatService.buildChatItems(usernameLabel.getText(),getSelectedUsername()),this::setRepliedToMessage);
+        replyMessageLabel.setVisible(false);
     }
 
     @FXML
@@ -55,8 +68,14 @@ public class ChatController implements Observer {
         if(messageField.getText().isEmpty()){
             return;
         }
-        chatService.saveMessage(usernameLabel.getText(),getSelectedUsername(), messageField.getText());
+
+        chatService.saveMessage(usernameLabel.getText(),getSelectedUsername(), messageField.getText(),isReplying() ? repliedToMessage : null);
+        replyMessageLabel.setVisible(false);
         messageField.clear();
+    }
+
+    private boolean isReplying(){
+        return replyMessageLabel.isVisible();
     }
 
 
@@ -93,6 +112,19 @@ public class ChatController implements Observer {
         if(chatService.getLastFriendRequest().getId().getSecond().equals(chatService.getUser(usernameLabel.getText()).getId())){
             StageManager.showInformationAlert("You just received a friend request!");
         }
+    }
+
+    public void setRepliedToMessage(Message message){
+        repliedToMessage = message;
+        replyMessageLabel.setText("Replying to : " + message.getMessage());
+        replyMessageLabel.setVisible(true);
+        scrollToBottom();
+    }
+
+    private void scrollToBottom(){
+        messagesScrollPane.vvalueProperty().unbind();
+        messagesScrollPane.vvalueProperty().set(1);
+        messagesScrollPane.vvalueProperty().bind(messagesBox.heightProperty());
     }
 
     @Override

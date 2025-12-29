@@ -1,12 +1,9 @@
 package service;
 
 import domain.*;
-import enums.ChangeEvent;
 import models.MessageModel;
 import models.UserModel;
 import utils.Models;
-import utils.observer.Observable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -52,8 +49,10 @@ public class ChatService{
                 String headerText = isMine ? "You" : otherUsername;
                 items.add(new ChatHeaderItem(headerText, isMine));
             }
-
-            items.add(new ChatMessageItem(message, message.getFromId().equals(currentUserId)));
+            if(message instanceof ReplyMessage rm)
+                items.add(new ChatReplyMessageItem(message,messageModel.findOne(rm.getReplyMessageId()).getMessage(),rm.getFromId().equals(currentUserId)));
+            else
+                items.add(new ChatMessageItem(message, message.getFromId().equals(currentUserId)));
             lastSenderId = message.getFromId();
         }
 
@@ -72,7 +71,8 @@ public class ChatService{
         return messageModel.findConversation(id1,id2);
     }
 
-    public void saveMessage(String fromUsername, String toUsername, String text) {
-        messageModel.save(getUser(fromUsername).getId(),getUser(toUsername).getId(),text);
+    public void saveMessage(String fromUsername, String toUsername, String text,Message repliedToMessage) {
+
+        messageModel.save(getUser(fromUsername).getId(), getUser(toUsername).getId(), text,repliedToMessage);
     }
 }

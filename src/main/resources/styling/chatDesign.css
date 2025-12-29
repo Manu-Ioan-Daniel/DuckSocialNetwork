@@ -12,24 +12,49 @@
     -fx-border-color:darkgoldenrod;
     -fx-border-radius:10px;
 }
-.received-message{
-    -fx-background-color:gray;
-    -fx-background-radius:10px;
+
+.sent-message, .received-message {
+    -fx-padding: 6px 12px;
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 1, 0, 0, 1); /* subtle shadow */
+    -fx-wrap-text: true;
+    -fx-max-width: 400px;
 }
+.sent-message {
+    -fx-background-color: darkgoldenrod;
+    -fx-text-fill: white;
+}
+
+.received-message {
+    -fx-background-color: gray;
+    -fx-text-fill: white;
+}
+
 .received-message .label{
     -fx-text-fill:white;
     -fx-font-size:16px;
 }
 
-.sent-message{
-    -fx-background-color:darkgoldenrod;
-    -fx-background-radius:10px;
-}
 .sent-message .label{
     -fx-text-fill:white;
     -fx-text-alignment:left;
     -fx-wrap-text:true;
     -fx-font-size:16px;
+}
+.sent-message .reply, .received-message .reply {
+    -fx-text-fill: #555;
+    -fx-font-size: 12px;
+    -fx-padding: 4px 8px;
+    -fx-background-radius: 8px;
+    -fx-wrap-text: true;
+    -fx-max-width: 300px;
+}
+.sent-message .reply{
+    -fx-background-color: #98791c;
+}
+.received-message .reply{
+    -fx-background-color: #656161;
+    -fx-text-fill:white;
 }
 .sent-message .time-label,
 .received-message .time-label{
@@ -46,4 +71,17 @@ VBox HBox .label{
 }
 .bottom-bar .button{
     -fx-background-color : linear-gradient(to bottom,#d18306,#f2d305);
+}
+
+.scroll-pane {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+.bottom-bar .label{
+    -fx-font-size:14px;
+    -fx-border-color:#d18306;
+    -fx-border-width: 1px 1px 0px 1px;
+    -fx-border-radius:10px 10px 0px 0px;
+    -fx-padding:10px;
+    -fx-opacity:0.4;
 }
