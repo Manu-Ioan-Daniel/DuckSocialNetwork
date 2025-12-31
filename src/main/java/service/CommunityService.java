@@ -20,8 +20,6 @@ public class CommunityService {
         this.friendshipService = friendshipService;
     }
 
-
-
     public Optional<User> findUser(String username){
         return usersService.findOne(username);
     }
@@ -57,9 +55,7 @@ public class CommunityService {
     }
 
     public List<User> getFriends(Long id){
-        if(id==null || id<0){
-            throw new ValidationException("Invalid id!");
-        }
+
         List<Long> friendIds = friendshipService.findFriendsOf(id);
         return usersService.mapIdsToUsers(friendIds);
     }

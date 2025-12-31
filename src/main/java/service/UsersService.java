@@ -20,11 +20,15 @@ public class UsersService extends Observable {
         this.userRepo=repo;
         this.userValidator = userValidator;
     }
-    public Optional<User> findOne(Long id) {
 
+    private void validateId(Long id){
         if(id==null || id<0){
             throw new ValidationException("Invalid id!");
         }
+    }
+    public Optional<User> findOne(Long id) {
+
+        validateId(id);
         return userRepo.findOne(id);
     }
 
@@ -52,7 +56,7 @@ public class UsersService extends Observable {
             return new ArrayList<>();
         }
         return ids.stream()
-                .map(id->userRepo.findOne(id).orElseThrow(()->new ValidationException("User with id:  " + id + "does not exist!")))
+                .map(id->findOne(id).orElseThrow(()->new ValidationException("User with id:  " + id + "does not exist!")))
                 .toList();
     }
 
@@ -78,9 +82,8 @@ public class UsersService extends Observable {
     }
 
     public void delete(Long id) {
-        if(id==null || id<0){
-            throw new ValidationException("Invalid id!");
-        }
+
+        validateId(id);
         userRepo.delete(id);
         notifyObservers(ChangeEvent.USER_DATA);
     }
