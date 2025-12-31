@@ -1,6 +1,6 @@
 package utils;
 
-import domain.*;
+import models.*;
 import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;

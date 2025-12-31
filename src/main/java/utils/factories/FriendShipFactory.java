@@ -1,5 +1,5 @@
 package utils.factories;
-import domain.Friendship;
+import models.Friendship;
 import utils.Tuple;
 
 public class FriendShipFactory {

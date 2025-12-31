@@ -1,4 +1,4 @@
-package domain;
+package models;
 
 public abstract class User extends Entity<Long> {
     private final String username;
@@ -20,5 +20,9 @@ public abstract class User extends Entity<Long> {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getType() {
+        return this instanceof Duck ? "duck" : "person";
     }
 }

@@ -1,6 +1,6 @@
 package utils.factories;
 
-import domain.FriendRequest;
+import models.FriendRequest;
 import utils.Tuple;
 
 public class FriendRequestFactory {

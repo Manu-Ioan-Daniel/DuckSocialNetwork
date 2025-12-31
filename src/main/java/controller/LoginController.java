@@ -7,8 +7,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import models.UserModel;
-import utils.Models;
+import service.SecurityService;
+import utils.Services;
 import utils.StageManager;
 import utils.UiUtils;
 import java.net.URL;
@@ -29,14 +29,14 @@ public class LoginController implements Initializable {
     @FXML
     private Button loginBtn;
 
-    private UserModel userModel;
+    private SecurityService securityService;
 
 
     @FXML
     public void login(){
         String username = usernameField.getText();
         String password = passwordField.getText();
-        if(!userModel.validLogin(username,password)){
+        if(!securityService.validLogin(username,password)){
             UiUtils.addTemporaryStylesheet(usernameField,"text-field-error");
             UiUtils.addTemporaryStylesheet(passwordField,"text-field-error");
             return;
@@ -47,7 +47,7 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loginBtn.setDefaultButton(true);
-        this.userModel = Models.getUserModel();
+        this.securityService = Services.getSecurityService();
     }
 
 }

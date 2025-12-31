@@ -1,5 +1,5 @@
 package repo;
-import domain.FriendRequest;
+import models.FriendRequest;
 import exceptions.RepoException;
 import utils.DbConnection;
 import utils.Tuple;

@@ -1,7 +1,7 @@
 package repo;
 
-import domain.Message;
-import domain.ReplyMessage;
+import models.Message;
+import models.ReplyMessage;
 import utils.DbConnection;
 import utils.Tuple;
 

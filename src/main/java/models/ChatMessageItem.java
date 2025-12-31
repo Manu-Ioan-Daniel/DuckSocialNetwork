@@ -1,4 +1,4 @@
-package domain;
+package models;
 
 public class ChatMessageItem implements ChatItem {
     private final Message message;

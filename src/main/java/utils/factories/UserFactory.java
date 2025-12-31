@@ -1,9 +1,9 @@
 package utils.factories;
 
-import domain.Duck;
-import domain.Person;
-import domain.User;
-import utils.UserDTO;
+import models.Duck;
+import models.Person;
+import models.User;
+import utils.dtos.UserDTO;
 
 public class UserFactory {
     private static UserFactory instance;

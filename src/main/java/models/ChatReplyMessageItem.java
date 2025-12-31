@@ -1,4 +1,4 @@
-package domain;
+package models;
 
 public class ChatReplyMessageItem extends ChatMessageItem {
     private final String replyMessage;

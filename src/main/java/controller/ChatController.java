@@ -1,6 +1,6 @@
 package controller;
 
-import domain.Message;
+import models.Message;
 import enums.ChangeEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -42,9 +42,10 @@ public class ChatController implements Observer {
 
 
     private Message repliedToMessage;
-    private final ChatService chatService = Services.getChatService();
+    private ChatService chatService;
 
     public void initData(String username) {
+        this.chatService = Services.getChatService();
         usernameLabel.setText(username);
         NotificationHandler.getInstance().addObserver(this);
         messagesScrollPane.vvalueProperty().bind(messagesBox.heightProperty());

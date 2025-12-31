@@ -1,8 +1,8 @@
 package validation;
 
-import domain.Duck;
-import domain.Person;
-import domain.User;
+import models.Duck;
+import models.Person;
+import models.User;
 import exceptions.ValidationException;
 
 import java.time.LocalDate;

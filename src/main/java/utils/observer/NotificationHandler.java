@@ -1,12 +1,19 @@
 package utils.observer;
 
 import enums.ChangeEvent;
+import utils.Services;
 
 public class NotificationHandler extends Observable implements Observer {
 
     private static NotificationHandler instance;
 
-    private NotificationHandler() {}
+    private NotificationHandler() {
+        Services.getUsersService().addObserver(this);
+        Services.getFriendshipService().addObserver(this);
+        Services.getFriendRequestService().addObserver(this);
+        Services.getMessageService().addObserver(this);
+
+    }
 
     public static NotificationHandler getInstance() {
         if (instance == null)

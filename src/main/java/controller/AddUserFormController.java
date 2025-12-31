@@ -1,17 +1,17 @@
 package controller;
 
-import domain.User;
+import models.User;
 import enums.DuckType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import models.UserModel;
+import service.UsersService;
 import utils.DraggableUtil;
-import utils.Models;
+import utils.Services;
 import utils.StageManager;
-import utils.UserDTO;
+import utils.dtos.UserDTO;
 import utils.factories.UserFactory;
 import utils.UiUtils;
 
@@ -66,13 +66,13 @@ public class AddUserFormController implements Initializable {
     @FXML
     private TextField usernameField;
 
-    private UserModel userModel;
+    private UsersService usersService;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         duckFieldsVBox.setVisible(false);
         personFieldsVBox.setVisible(true);
-        this.userModel = Models.getUserModel();
+        this.usersService = Services.getUsersService();
         date.setValue(LocalDate.now());
         DraggableUtil.makeDraggable(root);
         initTypeComboBox();
@@ -103,7 +103,7 @@ public class AddUserFormController implements Initializable {
             return;
         }
         try {
-            userModel.save(getUser());
+            usersService.save(getUser());
             ((Stage)root.getScene().getWindow()).close();
         }catch(Exception ex){
             StageManager.showErrorAlert(ex.getMessage());

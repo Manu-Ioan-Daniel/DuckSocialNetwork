@@ -1,4 +1,4 @@
-package domain;
+package models;
 
 import enums.DuckType;
 
@@ -13,7 +13,7 @@ public class Duck extends User {
         this.resistance = resistance;
     }
 
-    public DuckType getType() {
+    public DuckType getDuckType() {
         return type;
     }
 

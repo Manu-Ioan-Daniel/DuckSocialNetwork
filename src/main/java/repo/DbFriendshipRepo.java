@@ -1,6 +1,6 @@
 package repo;
 
-import domain.Friendship;
+import models.Friendship;
 import exceptions.RepoException;
 import utils.DbConnection;
 import utils.Tuple;

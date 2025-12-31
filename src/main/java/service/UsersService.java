@@ -1,75 +1,107 @@
 package service;
 
-import domain.Duck;
-import domain.FriendRequest;
-import domain.User;
-import javafx.collections.ObservableList;
-import models.FriendRequestModel;
-import models.FriendshipModel;
-import models.UserModel;
-
+import exceptions.ValidationException;
+import models.User;
+import enums.ChangeEvent;
+import repo.DbUserRepo;
+import utils.observer.Observable;
+import validation.Validator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-public class UsersService{
-    private final UserModel userModel;
-    private final FriendshipModel friendshipModel;
-    private final FriendRequestModel friendRequestModel;
 
-    public UsersService(UserModel userModel, FriendshipModel friendshipModel, FriendRequestModel friendRequestModel) {
+public class UsersService extends Observable {
+    private final DbUserRepo userRepo;
+    private final Validator<User> userValidator;
 
-        this.userModel = userModel;
-        this.friendshipModel = friendshipModel;
-        this.friendRequestModel = friendRequestModel;
+    public UsersService(DbUserRepo repo, Validator<User> userValidator) {
+        this.userRepo=repo;
+        this.userValidator = userValidator;
+    }
+    public Optional<User> findOne(Long id) {
 
+        if(id==null || id<0){
+            throw new ValidationException("Invalid id!");
+        }
+        return userRepo.findOne(id);
+    }
+
+    public Optional<User> findOne(String username) {
+
+        if(username==null || username.isEmpty()){
+            throw new ValidationException("Invalid username!");
+        }
+        return userRepo.findOne(username);
+    }
+
+    public List<User> findUsersFromPage(int page, int pageSize){
+        if(page<0 || pageSize<=0){
+            throw new ValidationException("Invalid page!");
+        }
+        int offset = (page) * pageSize;
+        List<User> users = new ArrayList<>();
+        userRepo.findUsersFromPage(offset, pageSize).forEach(users::add);
+        return users;
     }
 
 
-    public Optional<User> getUser(String username) {
-        return userModel.findOne(username);
+    public List<User> mapIdsToUsers(List<Long> ids){
+        if(ids==null || ids.isEmpty()){
+            return new ArrayList<>();
+        }
+        return ids.stream()
+                .map(id->userRepo.findOne(id).orElseThrow(()->new ValidationException("User with id:  " + id + "does not exist!")))
+                .toList();
     }
 
-    public String getFriendsToString(Long userId) {
-        return userModel.mapIdsToUsernamesString(friendshipModel.findFriendsOf(userId));
+    public List<User> getAllUsersExcept(Set<Long> exceptIds){
+        if(exceptIds==null || exceptIds.isEmpty()){
+            return new ArrayList<>();
+        }
+        return findAll().stream()
+                .filter(u->!exceptIds.contains(u.getId()))
+                .toList();
     }
 
-    public String getType(User user) {
-        return user instanceof Duck ? "duck" : "person";
+    public List<User> findAll() {
+       List<User> users = new ArrayList<>();
+       userRepo.findAll().forEach(users::add);
+       return users;
     }
 
-    public int getTotalUsers() {
-        return userModel.getTotalUsers();
-    }
-
-    public int getTotalDucks() {
-        return userModel.getTotalDucks();
-    }
-
-    public int getTotalPeople() {
-        return userModel.getTotalPeople();
-    }
-
-    public int getPageCount(int usersPerPage) {
-        return userModel.getPageCount(usersPerPage);
-    }
-
-    public ObservableList<User> findUsersFromPage(int pageIndex, int usersPerPage) {
-        return userModel.findUsersFromPage(pageIndex, usersPerPage);
+    public void save(User user) {
+        userValidator.validate(user);
+        userRepo.save(user);
+        notifyObservers(ChangeEvent.USER_DATA);
     }
 
     public void delete(Long id) {
-        userModel.delete(id);
+        if(id==null || id<0){
+            throw new ValidationException("Invalid id!");
+        }
+        userRepo.delete(id);
+        notifyObservers(ChangeEvent.USER_DATA);
     }
 
-    public String getFriendRequestsToString(Long id) {
-        StringBuilder stringBuilder = new StringBuilder();
-        friendRequestModel.findFriendRequestsOf(id).forEach(friendRequest ->
-            userModel.findOne(friendRequest.getId().getFirst()).ifPresent(user -> stringBuilder.append(user.getUsername()).append("\n"))
-        );
-        return stringBuilder.toString();
+    public int getPageCount(int usersPerPage){
+        if(usersPerPage<=0){
+            throw new  ValidationException("Invalid usersPerPage!");
+        }
+        int totalUsers = getTotalUsers();
+        return totalUsers/usersPerPage + (totalUsers % usersPerPage == 0 ? 0 : 1);
     }
 
-    public FriendRequest getLastFriendRequest() {
-        return friendRequestModel.getLastFriendRequest();
+    public int getTotalUsers(){
+        return userRepo.countUsers();
     }
+    public int getTotalDucks(){
+        return userRepo.countDucks();
+    }
+    public int getTotalPeople(){
+        return userRepo.countPeople();
+    }
+
 
 }

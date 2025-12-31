@@ -1,22 +1,20 @@
-package models;
+package service;
 
-import domain.Message;
+import models.Message;
 
-import domain.ReplyMessage;
+import models.ReplyMessage;
 import enums.ChangeEvent;
 import repo.DbMessageRepo;
 import utils.Tuple;
-import utils.observer.NotificationHandler;
 import utils.observer.Observable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageModel extends Observable {
+public class MessageService extends Observable {
     private final DbMessageRepo messageRepo;
-    public MessageModel(DbMessageRepo messageRepo) {
+    public MessageService(DbMessageRepo messageRepo) {
         this.messageRepo = messageRepo;
-        this.addObserver(NotificationHandler.getInstance());
     }
 
     public List<Message> findConversation(Long id1, Long id2){

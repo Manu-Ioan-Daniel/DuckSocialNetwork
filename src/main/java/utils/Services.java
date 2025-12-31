@@ -1,19 +1,46 @@
 package utils;
 
-import service.ChatService;
-import service.FriendsService;
-import service.UsersService;
+import repo.DbFriendRequestRepo;
+import repo.DbFriendshipRepo;
+import repo.DbMessageRepo;
+import repo.DbUserRepo;
+import service.*;
+import validation.UserValidator;
 
 public class Services {
-    private static final FriendsService friendsService = new FriendsService(Models.getUserModel(),Models.getFriendRequestModel(),Models.getFriendshipModel());
-    private static final UsersService usersService = new UsersService(Models.getUserModel(),Models.getFriendshipModel(),Models.getFriendRequestModel());
-    private static final ChatService chatService = new ChatService(Models.getUserModel(),Models.getMessageModel());
-    public static FriendsService getFriendsService() {
-        return friendsService;
-    }
+    private static final FriendshipService friendshipService = new FriendshipService(new DbFriendshipRepo());
+    private static final UsersService usersService = new UsersService(new DbUserRepo(),new UserValidator());
+    private static final SecurityService securityService = new SecurityService(usersService);
+    private static final FriendRequestService friendRequestService = new FriendRequestService(new DbFriendRequestRepo());
+    private static final MessageService messageService = new MessageService(new DbMessageRepo());
+    private static final ChatService chatService = new ChatService(usersService,messageService);
+    private static final CommunityService communityService = new CommunityService(usersService,friendRequestService,friendshipService);
+
     public static UsersService getUsersService() {
         return usersService;
     }
 
+    public static FriendshipService getFriendshipService() {
+        return friendshipService;
+    }
+
+    public static FriendRequestService getFriendRequestService() {
+        return friendRequestService;
+    }
+
+    public static CommunityService getCommunityService() {
+        return communityService;
+    }
+
+    public static SecurityService getSecurityService() {
+        return securityService;
+    }
+
+    public static MessageService getMessageService() {
+        return messageService;
+    }
+
     public static ChatService getChatService() { return chatService;}
+
+
 }

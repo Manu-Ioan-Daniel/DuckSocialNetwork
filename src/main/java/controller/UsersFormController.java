@@ -1,26 +1,25 @@
 package controller;
-import domain.User;
+
+import models.User;
 import enums.ChangeEvent;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import service.UsersService;
+import service.CommunityService;
 import utils.Services;
 import utils.StageManager;
+import utils.dtos.UserTableDTO;
 import utils.observer.NotificationHandler;
 import utils.observer.Observer;
-import java.net.URL;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
 
 
-public class UsersFormController implements Observer, Initializable {
+public class UsersFormController implements Observer{
     @FXML
     private BorderPane root;
 
@@ -37,38 +36,38 @@ public class UsersFormController implements Observer, Initializable {
     private Label usernameLabel;
 
     @FXML
-    private TableView<User> usersTableView;
+    private TableView<UserTableDTO> usersTableView;
 
     @FXML
-    private TableColumn<User,String> usernameColumn;
+    private TableColumn<UserTableDTO,String> usernameColumn;
 
     @FXML
-    private TableColumn<User,String> emailColumn;
+    private TableColumn<UserTableDTO,String> emailColumn;
 
     @FXML
-    private TableColumn<User,String> friendsColumn;
+    private TableColumn<UserTableDTO,String> friendsColumn;
 
     @FXML
-    private TableColumn<User,String> typeColumn;
+    private TableColumn<UserTableDTO,String> typeColumn;
 
     @FXML
     private Pagination pagination;
 
-    private UsersService usersService;
+    private CommunityService communityService;
 
     private User currentUser;
 
     private final static int USERS_PER_PAGE = 3;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.usersService = Services.getUsersService();
-        NotificationHandler.getInstance().addObserver(this);
-    }
-
     public void initData(String username) {
+        this.communityService = Services.getCommunityService();
         usernameLabel.setText(username);
-        usersService.getUser(usernameLabel.getText()).ifPresent(user -> currentUser = user);
+        try {
+            communityService.findUser(usernameLabel.getText()).ifPresent(user -> currentUser = user);
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+        NotificationHandler.getInstance().addObserver(this);
         initUsersTable();
         loadLabelInfo();
         initPagination();
@@ -85,22 +84,24 @@ public class UsersFormController implements Observer, Initializable {
     private void initUsersTable() {
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        friendsColumn.setCellValueFactory(cell-> new SimpleStringProperty(usersService.getFriendsToString(cell.getValue().getId())));
-        typeColumn.setCellValueFactory(cell-> new SimpleStringProperty(usersService.getType(cell.getValue())));
+        friendsColumn.setCellValueFactory(new PropertyValueFactory<>("friendsString"));
+        typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
     }
 
+
+
     public void loadLabelInfo(){
-        userCount.setText(Integer.toString(usersService.getTotalUsers()));
-        duckCount.setText(Integer.toString(usersService.getTotalDucks()));
-        peopleCount.setText(Integer.toString(usersService.getTotalPeople()));
+        userCount.setText(Integer.toString(communityService.getTotalUsers()));
+        duckCount.setText(Integer.toString(communityService.getTotalDucks()));
+        peopleCount.setText(Integer.toString(communityService.getTotalPeople()));
     }
 
     private void loadPaginationPageCount(){
-        pagination.setPageCount(usersService.getPageCount(USERS_PER_PAGE));
+        pagination.setPageCount(communityService.getPageCount(USERS_PER_PAGE));
     }
 
     private void refreshUsersTable(int pageIndex){
-        usersTableView.setItems(usersService.findUsersFromPage(pageIndex, USERS_PER_PAGE));
+        usersTableView.setItems(FXCollections.observableList(communityService.findUsersFromPageAsDTO(pageIndex, USERS_PER_PAGE)));
     }
 
     @FXML
@@ -109,11 +110,22 @@ public class UsersFormController implements Observer, Initializable {
     }
 
     public void signout(){
-
-        removeObservers();
+        NotificationHandler.getInstance().removeObserver(this);
         Stage stage = (Stage) root.getScene().getWindow();
         StageManager.showLoginWindow(stage);
 
+    }
+
+    public void handleFriendsWindow(){
+        NotificationHandler.getInstance().removeObserver(this);
+        Stage  stage = (Stage) root.getScene().getWindow();
+        StageManager.showFriendsWindow(stage,usernameLabel.getText());
+    }
+
+    public void handleChatWindow(){
+        NotificationHandler.getInstance().removeObserver(this);
+        Stage  stage = (Stage) root.getScene().getWindow();
+        StageManager.showChatWindow(stage,usernameLabel.getText());
     }
 
     @FXML
@@ -123,7 +135,7 @@ public class UsersFormController implements Observer, Initializable {
 
     @FXML
     public void handleDelete(){
-        User selectedUser = usersTableView.getSelectionModel().getSelectedItem();
+        UserTableDTO selectedUser = usersTableView.getSelectionModel().getSelectedItem();
         if(selectedUser == null){
             StageManager.showErrorAlert("Please select a user");
             return;
@@ -132,36 +144,22 @@ public class UsersFormController implements Observer, Initializable {
             StageManager.showErrorAlert("You cannot delete yourself!");
             return;
         }
-        usersService.delete(selectedUser.getId());
+        communityService.deleteUser(selectedUser.getId());
     }
 
-    public void handleFriendsWindow(){
-        removeObservers();
-        Stage  stage = (Stage) root.getScene().getWindow();
-        StageManager.showFriendsWindow(stage,usernameLabel.getText());
-    }
-
-    public void handleChatWindow(){
-        removeObservers();
-        Stage  stage = (Stage) root.getScene().getWindow();
-        StageManager.showChatWindow(stage,usernameLabel.getText());
-    }
 
     private void loadNotifications(){
-        if(Objects.equals(usersService.getLastFriendRequest().getId().getSecond(), currentUser.getId()))
-            StageManager.showInformationAlert("You have friend requests from: " + usersService.getFriendRequestsToString(currentUser.getId()));
+        if(Objects.equals(communityService.getLastFriendRequest().getId().getSecond(), currentUser.getId()))
+            StageManager.showInformationAlert("You have received a friend request!");
     }
 
-    private void removeObservers(){
-        NotificationHandler.getInstance().removeObserver(this);
-    }
 
     @Override
     public void update(ChangeEvent event){
         if(ChangeEvent.SENT_FRIEND_REQUEST == event){
             loadNotifications();
         }
-        else {
+        else if(ChangeEvent.USER_DATA == event){
             loadLabelInfo();
             loadPaginationPageCount();
             refreshUsersTable(pagination.getCurrentPageIndex());

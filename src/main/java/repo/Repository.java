@@ -1,6 +1,6 @@
 package repo;
 
-import domain.Entity;
+import models.Entity;
 import java.util.Optional;
 
 

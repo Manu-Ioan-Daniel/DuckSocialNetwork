@@ -1,7 +1,7 @@
 package repo;
-import domain.Duck;
-import domain.Person;
-import domain.User;
+import models.Duck;
+import models.Person;
+import models.User;
 import enums.DuckType;
 import exceptions.RepoException;
 import utils.DbConnection;
@@ -164,7 +164,7 @@ public class DbUserRepo implements Repository<Long, User>{
                     """;
                 try(PreparedStatement ps2 = connection.prepareStatement(sql2)){
                     ps2.setLong(1, id);
-                    ps2.setString(2,duck.getType().toString());
+                    ps2.setString(2,duck.getDuckType().toString());
                     ps2.setDouble(3,duck.getSpeed());
                     ps2.setDouble(4,duck.getResistance());
                     ps2.executeUpdate();
