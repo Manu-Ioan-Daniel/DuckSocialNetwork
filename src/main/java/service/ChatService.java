@@ -2,7 +2,6 @@ package service;
 
 import models.*;
 import utils.Services;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +48,7 @@ public class ChatService{
                 items.add(new ChatHeaderItem(headerText, isMine));
             }
             if(message instanceof ReplyMessage rm)
-                items.add(new ChatReplyMessageItem(message, messageService.findOne(rm.getReplyMessageId()).getMessage(),rm.getFromId().equals(currentUserId)));
+                items.add(new ChatReplyMessageItem(message, messageService.findOne(rm.getReplyMessageId()).orElseThrow().getMessage(),rm.getFromId().equals(currentUserId)));
             else
                 items.add(new ChatMessageItem(message, message.getFromId().equals(currentUserId)));
             lastSenderId = message.getFromId();

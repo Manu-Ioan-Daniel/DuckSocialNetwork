@@ -1,0 +1,15 @@
+.button{
+    -fx-background-color:transparent;
+}
+.button:hover{
+    -fx-background-color: #e3e0e0;
+    -fx-background-radius:20px;
+    -fx-cursor:hand;
+}
+.bottom-label{
+    -fx-text-fill:#0000EE;
+}
+.bottom-label:hover{
+    -fx-text-fill: #0267ff;
+    -fx-cursor:hand;
+}

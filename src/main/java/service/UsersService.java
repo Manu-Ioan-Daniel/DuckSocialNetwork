@@ -15,20 +15,18 @@ import java.util.Set;
 public class UsersService extends Observable {
     private final DbUserRepo userRepo;
     private final Validator<User> userValidator;
+    private final Validator<Long> idValidator;
 
-    public UsersService(DbUserRepo repo, Validator<User> userValidator) {
+    public UsersService(DbUserRepo repo, Validator<User> userValidator,Validator<Long> idValidator) {
         this.userRepo=repo;
         this.userValidator = userValidator;
+        this.idValidator = idValidator;
     }
 
-    private void validateId(Long id){
-        if(id==null || id<0){
-            throw new ValidationException("Invalid id!");
-        }
-    }
+    
     public Optional<User> findOne(Long id) {
 
-        validateId(id);
+        idValidator.validate(id);
         return userRepo.findOne(id);
     }
 
@@ -83,7 +81,7 @@ public class UsersService extends Observable {
 
     public void delete(Long id) {
 
-        validateId(id);
+        idValidator.validate(id);
         userRepo.delete(id);
         notifyObservers(ChangeEvent.USER_DATA);
     }

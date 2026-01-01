@@ -1,6 +1,5 @@
 package service;
 
-import exceptions.ValidationException;
 import models.FriendRequest;
 import models.User;
 import exceptions.ServiceException;

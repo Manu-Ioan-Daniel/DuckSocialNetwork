@@ -1,23 +1,31 @@
 package service;
 
 import models.Message;
-
 import models.ReplyMessage;
 import enums.ChangeEvent;
 import repo.DbMessageRepo;
 import utils.Tuple;
 import utils.observer.Observable;
+import validation.Validator;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class MessageService extends Observable {
+
     private final DbMessageRepo messageRepo;
-    public MessageService(DbMessageRepo messageRepo) {
+    private final Validator<Long> idValidator;
+
+    public MessageService(DbMessageRepo messageRepo, Validator<Long> idValidator) {
+
         this.messageRepo = messageRepo;
+        this.idValidator = idValidator;
     }
 
     public List<Message> findConversation(Long id1, Long id2){
+        idValidator.validate(id1);
+        idValidator.validate(id2);
         List<Message> msgs = new ArrayList<>();
         for(Message m : messageRepo.findConversation(new Tuple<>(id1,id2))){
             msgs.add(m);
@@ -26,6 +34,8 @@ public class MessageService extends Observable {
     }
 
     public void save(Long fromId, Long toId, String text, Message repliedToMessage){
+        idValidator.validate(fromId);
+        idValidator.validate(toId);
         if(repliedToMessage == null){
             messageRepo.save(new Message(text, LocalDateTime.now(), fromId, toId));
             notifyObservers(ChangeEvent.MESSAGE_EVENT);
@@ -35,7 +45,7 @@ public class MessageService extends Observable {
         notifyObservers(ChangeEvent.MESSAGE_EVENT);
     }
 
-    public Message findOne(Long messageId) {
-        return messageRepo.findOne(messageId).orElse(null);
+    public Optional<Message> findOne(Long messageId) {
+        return messageRepo.findOne(messageId);
     }
 }

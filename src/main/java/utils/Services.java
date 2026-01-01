@@ -5,14 +5,15 @@ import repo.DbFriendshipRepo;
 import repo.DbMessageRepo;
 import repo.DbUserRepo;
 import service.*;
+import validation.IdValidator;
 import validation.UserValidator;
 
 public class Services {
-    private static final FriendshipService friendshipService = new FriendshipService(new DbFriendshipRepo());
-    private static final UsersService usersService = new UsersService(new DbUserRepo(),new UserValidator());
+    private static final FriendshipService friendshipService = new FriendshipService(new DbFriendshipRepo(),new IdValidator());
+    private static final UsersService usersService = new UsersService(new DbUserRepo(),new UserValidator(),new IdValidator());
     private static final SecurityService securityService = new SecurityService(usersService);
-    private static final FriendRequestService friendRequestService = new FriendRequestService(new DbFriendRequestRepo());
-    private static final MessageService messageService = new MessageService(new DbMessageRepo());
+    private static final FriendRequestService friendRequestService = new FriendRequestService(new DbFriendRequestRepo(),new IdValidator());
+    private static final MessageService messageService = new MessageService(new DbMessageRepo(),new IdValidator());
     private static final ChatService chatService = new ChatService(usersService,messageService);
     private static final CommunityService communityService = new CommunityService(usersService,friendRequestService,friendshipService);
 

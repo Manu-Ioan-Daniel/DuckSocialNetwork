@@ -82,5 +82,6 @@ public class StageManager {
         tuple.getSecond().initData(username);
         stage.setScene(tuple.getFirst());
         stage.centerOnScreen();
+        stage.toFront();
     }
 }

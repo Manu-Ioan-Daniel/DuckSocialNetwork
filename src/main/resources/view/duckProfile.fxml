@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="240.0" prefWidth="527.0" stylesheets="@../styling/profileDesign.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.UserProfileController">
+   <left>
+      <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="TOP_LEFT">
+         <image>
+            <Image url="@../images/duck.png" />
+         </image>
+      </ImageView>
+   </left>
+   <center>
+      <VBox fillWidth="false" prefHeight="169.0" prefWidth="309.0" spacing="10.0" BorderPane.alignment="TOP_LEFT">
+         <BorderPane.margin>
+            <Insets left="20.0" right="20.0" top="20.0" />
+         </BorderPane.margin>
+         <children>
+            <HBox alignment="CENTER" fillHeight="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="20.0" stylesheets="@../styling/profileDesign.css">
+               <children>
+                  <Label fx:id="usernameLabel" text="&lt;Username&gt;" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font size="22.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="friendReqBtn" mnemonicParsing="false">
+                     <graphic>
+                        <ImageView fitHeight="29.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/friendRequest.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="chatBtn" layoutX="558.0" layoutY="40.0" mnemonicParsing="false">
+                     <graphic>
+                        <ImageView fitHeight="29.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/chat.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+            <HBox spacing="20.0">
+               <children>
+                  <Label fx:id="friendsLabel" text="x Friends">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="messagesLabel" text="x Messages Sent">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="67.0" spacing="20.0">
+               <children>
+                  <Label fx:id="descriptionLabel" text="Im just a &lt;typeofduck&gt; duck with a speed of X and a resistance of X, minding my own business" wrapText="true">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </center>
+   <padding>
+      <Insets left="30.0" top="30.0" />
+   </padding>
+   <bottom>
+      <Label fx:id="bottomLabel" styleClass="bottom-label" text="ducksocialnetwork.com/~&lt;Username&gt;" underline="true" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+   </bottom>
+</BorderPane>

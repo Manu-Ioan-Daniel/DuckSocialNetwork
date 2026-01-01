@@ -19,6 +19,8 @@ public class UiChatUtils {
 
     public static void addUsernamesToVBox(VBox box, List<String> usernames, Runnable action){
 
+
+
         for(String username : usernames){
 
             ImageView userIcon = new ImageView();

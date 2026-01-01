@@ -131,6 +131,7 @@ public class ChatController implements Observer {
     public void update(ChangeEvent event) {
         if(event.equals(ChangeEvent.USER_DATA)){
             loadUsernames();
+            loadConversation();
         }else if(event.equals(ChangeEvent.MESSAGE_EVENT)){
             loadConversation();
         }else if(event.equals(ChangeEvent.SENT_FRIEND_REQUEST)){
