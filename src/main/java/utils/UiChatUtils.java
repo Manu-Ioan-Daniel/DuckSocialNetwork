@@ -58,6 +58,15 @@ public class UiChatUtils {
         return null;
     }
 
+    public static void setSelectedUsername(VBox usernamesBox,String username){
+        for(Node node : usernamesBox.getChildren()){
+            node.getStyleClass().remove("selected");
+            if(node.getUserData().equals(username)){
+                node.getStyleClass().add("selected");
+            }
+        }
+    }
+
     private static HBox usernameHeader(String username,boolean isMine){
         ImageView userIcon = new ImageView();
         userIcon.setFitHeight(28);

@@ -138,4 +138,9 @@ public class ChatController implements Observer {
             loadNotifications();
         }
     }
+
+    public void setSelectedUser(String username2) {
+        UiChatUtils.setSelectedUsername(usernamesBox,username2);
+        loadConversation();
+    }
 }

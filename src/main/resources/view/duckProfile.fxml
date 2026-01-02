@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="240.0" prefWidth="527.0" stylesheets="@../styling/profileDesign.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.UserProfileController">
+<BorderPane fx:id="root" prefHeight="240.0" prefWidth="527.0" stylesheets="@../styling/profileDesign.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.UserProfileController">
    <left>
       <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="TOP_LEFT">
          <image>
@@ -31,16 +31,16 @@
                         <Font size="22.0" />
                      </font>
                   </Label>
-                  <Button fx:id="friendReqBtn" mnemonicParsing="false">
+                  <Button fx:id="friendReqBtn" mnemonicParsing="false" onAction="#handleFriendReq">
                      <graphic>
-                        <ImageView fitHeight="29.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="friendReqBtnImage" fitHeight="29.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/friendRequest.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="chatBtn" layoutX="558.0" layoutY="40.0" mnemonicParsing="false">
+                  <Button fx:id="chatBtn" layoutX="558.0" layoutY="40.0" mnemonicParsing="false" onAction="#handleChatBtn">
                      <graphic>
                         <ImageView fitHeight="29.0" fitWidth="56.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -67,7 +67,7 @@
             </HBox>
             <HBox layoutX="10.0" layoutY="67.0" spacing="20.0">
                <children>
-                  <Label fx:id="descriptionLabel" text="Im just a &lt;typeofduck&gt; duck with a speed of X and a resistance of X, minding my own business" wrapText="true">
+                  <Label fx:id="descriptionLabel" prefWidth="300.0" text="Im just a &lt;typeofduck&gt; duck with a speed of X and a resistance of X, minding my own business" wrapText="true">
                      <font>
                         <Font size="13.0" />
                      </font>

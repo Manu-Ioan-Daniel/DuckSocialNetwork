@@ -4,7 +4,7 @@ import controller.*;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
+import models.User;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -77,11 +77,31 @@ public class StageManager {
         });
     }
 
-    public static void showChatWindow(Stage stage, String username) {
+    public static void showChatWindow(Stage stage, String username,String username2) {
         Tuple<Scene, ChatController> tuple = FXMLUtil.load("/view/chat.fxml");
         tuple.getSecond().initData(username);
+        if(username2!=null){
+            tuple.getSecond().setSelectedUser(username2);
+        }
         stage.setScene(tuple.getFirst());
         stage.centerOnScreen();
         stage.toFront();
+    }
+
+    public static void showProfileWindow(Stage parentStage, User user, User loggedInUser){
+        showStageReplace("profile",()->{
+
+            Tuple<Scene, UserProfileController> tuple = FXMLUtil.load("/view/" + user.getType() + "Profile.fxml");
+
+            UserProfileController userProfileController = tuple.getSecond();
+            userProfileController.initData(parentStage,user, loggedInUser);
+
+            Scene scene = tuple.getFirst();
+
+            Stage stage = new Stage();
+            stage.setScene(scene);
+
+            return stage;
+        });
     }
 }

@@ -127,4 +127,23 @@ public class DbMessageRepo implements Repository<Long, Message> {
     public void update(Message entity) {
 
     }
+
+    public int getMessageCount(Long id) {
+
+        String sql = """
+                SELECT COUNT(*) FROM messages M
+                WHERE M.fromId = ?
+                """;
+        try(PreparedStatement ps = connection.prepareStatement(sql)){
+            ps.setLong(1, id);
+            try(ResultSet rs = ps.executeQuery()){
+                if(rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }catch(SQLException e){
+            throw new RuntimeException(e);
+        }
+        return 0;
+    }
 }

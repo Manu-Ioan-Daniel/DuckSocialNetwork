@@ -48,4 +48,9 @@ public class MessageService extends Observable {
     public Optional<Message> findOne(Long messageId) {
         return messageRepo.findOne(messageId);
     }
+
+    public int getMessageCount(Long id) {
+        idValidator.validate(id);
+        return messageRepo.getMessageCount(id);
+    }
 }

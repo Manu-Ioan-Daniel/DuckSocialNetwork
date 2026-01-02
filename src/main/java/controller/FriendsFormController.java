@@ -220,7 +220,7 @@ public class FriendsFormController implements Observer {
     public void handleChatWindow() {
         NotificationHandler.getInstance().removeObserver(this);
         Stage stage = (Stage) root.getScene().getWindow();
-        StageManager.showChatWindow(stage, usernameLabel.getText());
+        StageManager.showChatWindow(stage, usernameLabel.getText(),null);
     }
 
     @Override

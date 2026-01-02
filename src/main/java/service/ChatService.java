@@ -72,4 +72,9 @@ public class ChatService{
     public void saveMessage(String fromUsername, String toUsername, String text,Message repliedToMessage) {
         messageService.save(getUser(fromUsername).getId(), getUser(toUsername).getId(), text,repliedToMessage);
     }
+
+    public int getMessageCount(Long id) {
+        return messageService.getMessageCount(id);
+    }
 }
+

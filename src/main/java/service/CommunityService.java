@@ -107,6 +107,11 @@ public class CommunityService {
 
 
     public void saveFriendRequest(Long currentUserId, Long targetId) {
+
+        if(currentUserId.equals(targetId)){
+            throw new ServiceException("You cannot friend reuqest yourself!");
+        }
+
         Optional<FriendRequest> fr = friendRequestService.findOne(currentUserId, targetId);
         if(fr.isEmpty()){
             friendRequestService.save(FriendRequestFactory.getInstance().createFriendRequest(currentUserId, targetId, "pending"));
@@ -114,7 +119,7 @@ public class CommunityService {
         }
         FriendRequest friendRequest = fr.get();
 
-        if(friendRequest.getStatus().equals("pending"))
+        if(friendRequest.getStatus().equals("pending") || friendRequest.getStatus().equals("accepted"))
             return;
         if(friendRequest.getId().getFirst().equals(currentUserId)) {
             friendRequest.setStatus("pending");
@@ -142,5 +147,9 @@ public class CommunityService {
         }
         fr.setStatus("denied");
         friendRequestService.update(fr);
+    }
+
+    public Optional<FriendRequest> findFriendRequest(Long id1, Long id2) {
+        return friendRequestService.findOne(id1, id2);
     }
 }

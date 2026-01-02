@@ -86,6 +86,11 @@ public class UsersFormController implements Observer{
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         friendsColumn.setCellValueFactory(new PropertyValueFactory<>("friendsString"));
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+        usersTableView.setOnMouseClicked(event -> {
+            if(event.getClickCount() == 2){
+                StageManager.showProfileWindow((Stage) root.getScene().getWindow(),communityService.findUser(usersTableView.getSelectionModel().getSelectedItem().getUsername()).orElseThrow(),currentUser);
+            }
+        });
     }
 
 
@@ -125,7 +130,7 @@ public class UsersFormController implements Observer{
     public void handleChatWindow(){
         NotificationHandler.getInstance().removeObserver(this);
         Stage  stage = (Stage) root.getScene().getWindow();
-        StageManager.showChatWindow(stage,usernameLabel.getText());
+        StageManager.showChatWindow(stage,usernameLabel.getText(),null);
     }
 
     @FXML

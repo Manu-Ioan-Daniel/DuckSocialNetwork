@@ -13,3 +13,7 @@
     -fx-text-fill: #0267ff;
     -fx-cursor:hand;
 }
+
+.label{
+    -fx-wrap-text:true;
+}
