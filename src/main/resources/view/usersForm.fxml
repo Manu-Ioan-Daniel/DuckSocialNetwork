@@ -114,6 +114,15 @@
                   <Insets />
                </VBox.margin>
             </Button>
+            <Button fx:id="eventsBtn" alignment="TOP_LEFT" layoutX="23.0" layoutY="529.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleEventsWindow" text="Events">
+               <graphic>
+                  <ImageView fitHeight="33.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/event.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
             <Button fx:id="signoutBtn" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSignout" prefHeight="42.0" text="Sign out" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets />

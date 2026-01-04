@@ -1,9 +1,9 @@
 package repo;
+
 import models.FriendRequest;
 import exceptions.RepoException;
 import utils.DbConnection;
 import utils.Tuple;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

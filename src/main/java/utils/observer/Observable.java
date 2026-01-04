@@ -18,4 +18,7 @@ public class Observable {
             observer.update(event);
         }
     }
+    public List<Observer> getObservers(){
+        return observers;
+    }
 }

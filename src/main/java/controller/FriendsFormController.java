@@ -67,15 +67,20 @@ public class FriendsFormController implements Observer {
 
     private User currentUser;
 
-    public void initData(String username) {
+    public void initData(String username)
+    {
         usernameLabel.setText(username);
+
         this.communityService = Services.getCommunityService();
         communityService.findUser(username)
                 .ifPresentOrElse(
                         user -> currentUser = user,
                         () -> { throw new RuntimeException("Current user not found!"); }
                 );
+
+
         NotificationHandler.getInstance().addObserver(this);
+
         initFriendsTable();
         initOthersTable();
         initToFriendReqTable();
@@ -205,22 +210,31 @@ public class FriendsFormController implements Observer {
     }
 
     private void signout() {
-        NotificationHandler.getInstance().removeObserver(this);
-        Stage stage = (Stage) root.getScene().getWindow();
-        StageManager.showLoginWindow(stage);
+        removeObservers();
+        StageManager.showLoginWindow(getStage());
     }
-
     @FXML
     public void handleUsersWindow() {
-        NotificationHandler.getInstance().removeObserver(this);
-        Stage stage = (Stage) root.getScene().getWindow();
-        StageManager.showUsersWindow(stage, usernameLabel.getText());
+        removeObservers();
+        StageManager.showUsersWindow(getStage(), usernameLabel.getText());
+    }
+    @FXML
+    public void handleChatWindow() {
+        removeObservers();
+        StageManager.showChatWindow(getStage(), usernameLabel.getText(),null);
+    }
+    @FXML
+    public void handleEventsWindow(){
+        removeObservers();
+        StageManager.showEventsWindow(getStage(),usernameLabel.getText());
     }
 
-    public void handleChatWindow() {
+    private Stage getStage() {
+        return (Stage) root.getScene().getWindow();
+    }
+
+    private void removeObservers(){
         NotificationHandler.getInstance().removeObserver(this);
-        Stage stage = (Stage) root.getScene().getWindow();
-        StageManager.showChatWindow(stage, usernameLabel.getText(),null);
     }
 
     @Override

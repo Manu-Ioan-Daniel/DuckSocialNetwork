@@ -47,23 +47,23 @@ public class StageManager {
     }
     public static void showLoginWindow(Stage stage){
         Tuple<Scene, LoginController> tuple = FXMLUtil.load(("/view/loginWindow.fxml"));
-
         Scene scene = tuple.getFirst();
-
         stage.setScene(scene);
         stage.centerOnScreen();
     }
     public static void showFriendsWindow(Stage stage,String username){
         Tuple<Scene, FriendsFormController> tuple = FXMLUtil.load("/view/friendsForm.fxml");
-        tuple.getSecond().initData(username);
-        stage.setScene(tuple.getFirst());
+        Scene scene = tuple.getFirst();
+        stage.setScene(scene);
         stage.centerOnScreen();
+        tuple.getSecond().initData(username);
     }
     public static void showUsersWindow(Stage stage,String username){
         Tuple<Scene, UsersFormController> tuple = FXMLUtil.load("/view/usersForm.fxml");
-        tuple.getSecond().initData(username);
-        stage.setScene(tuple.getFirst());
+        Scene scene = tuple.getFirst();
+        stage.setScene(scene);
         stage.centerOnScreen();
+        tuple.getSecond().initData(username);
     }
 
     public static void showAddUserWindow(){
@@ -79,29 +79,34 @@ public class StageManager {
 
     public static void showChatWindow(Stage stage, String username,String username2) {
         Tuple<Scene, ChatController> tuple = FXMLUtil.load("/view/chat.fxml");
+        Scene scene = tuple.getFirst();
+        stage.setScene(scene);
+        stage.centerOnScreen();
+        stage.toFront();
         tuple.getSecond().initData(username);
         if(username2!=null){
             tuple.getSecond().setSelectedUser(username2);
         }
-        stage.setScene(tuple.getFirst());
-        stage.centerOnScreen();
-        stage.toFront();
     }
 
     public static void showProfileWindow(Stage parentStage, User user, User loggedInUser){
         showStageReplace("profile",()->{
-
             Tuple<Scene, UserProfileController> tuple = FXMLUtil.load("/view/" + user.getType() + "Profile.fxml");
-
-            UserProfileController userProfileController = tuple.getSecond();
-            userProfileController.initData(parentStage,user, loggedInUser);
-
             Scene scene = tuple.getFirst();
-
             Stage stage = new Stage();
             stage.setScene(scene);
-
+            UserProfileController userProfileController = tuple.getSecond();
+            userProfileController.initData(parentStage,user, loggedInUser);
             return stage;
         });
+    }
+
+    public static void showEventsWindow(Stage stage, String username) {
+        Tuple<Scene, EventsFormController> tuple = FXMLUtil.load("/view/eventsForm.fxml");
+        Scene scene = tuple.getFirst();
+        stage.setScene(scene);
+        stage.centerOnScreen();
+        stage.toFront();
+        tuple.getSecond().initData(username);
     }
 }

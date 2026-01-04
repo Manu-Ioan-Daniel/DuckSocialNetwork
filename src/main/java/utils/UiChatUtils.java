@@ -31,7 +31,7 @@ public class UiChatUtils {
             Label usernameLabel = new Label(username);
 
             HBox usernameBox = new HBox();
-            usernameBox.setAlignment(Pos.CENTER);
+            usernameBox.setAlignment(Pos.CENTER_LEFT);
             usernameBox.setPadding(new Insets(2));
             usernameBox.setSpacing(10);
             usernameBox.setUserData(username);
@@ -140,8 +140,5 @@ public class UiChatUtils {
             }
         }
     }
-
-
-
 
 }

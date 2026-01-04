@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<VBox fx:id="root" alignment="CENTER" prefHeight="360.0" prefWidth="330.0" spacing="10.0" styleClass="form" stylesheets="@../styling/addFormDesign.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AddUserFormController">
+<VBox fx:id="root" alignment="CENTER" prefHeight="360.0" prefWidth="330.0" spacing="10.0" styleClass="form" stylesheets="@../styling/addFormDesign.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AddUserFormController">
    <children>
       <HBox spacing="10.0">
          <children>

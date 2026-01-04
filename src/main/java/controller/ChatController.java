@@ -1,5 +1,6 @@
 package controller;
 
+import javafx.stage.Stage;
 import models.Message;
 import enums.ChangeEvent;
 import javafx.fxml.FXML;
@@ -8,7 +9,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import service.ChatService;
 import utils.Services;
 import utils.StageManager;
@@ -86,22 +86,23 @@ public class ChatController implements Observer {
 
     private void signout() {
         NotificationHandler.getInstance().removeObserver(this);
-        Stage stage = (Stage) root.getScene().getWindow();
-        StageManager.showLoginWindow(stage);
+        StageManager.showLoginWindow(getStage());
+    }
+
+    private Stage getStage() {
+        return (Stage) root.getScene().getWindow();
     }
 
     @FXML
     public void handleUsersWindow(){
         NotificationHandler.getInstance().removeObserver(this);
-        Stage stage = (Stage) root.getScene().getWindow();
-        StageManager.showUsersWindow(stage,usernameLabel.getText());
+        StageManager.showUsersWindow(getStage(),usernameLabel.getText());
     }
 
     @FXML
     public void handleFriendsWindow(){
         NotificationHandler.getInstance().removeObserver(this);
-        Stage stage = (Stage) root.getScene().getWindow();
-        StageManager.showFriendsWindow(stage,usernameLabel.getText());
+        StageManager.showFriendsWindow(getStage(),usernameLabel.getText());
     }
 
     private String getSelectedUsername(){

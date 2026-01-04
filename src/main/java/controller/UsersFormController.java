@@ -67,7 +67,9 @@ public class UsersFormController implements Observer{
         }catch(Exception e){
             throw new RuntimeException(e);
         }
+
         NotificationHandler.getInstance().addObserver(this);
+
         initUsersTable();
         loadLabelInfo();
         initPagination();
@@ -115,22 +117,32 @@ public class UsersFormController implements Observer{
     }
 
     public void signout(){
-        NotificationHandler.getInstance().removeObserver(this);
-        Stage stage = (Stage) root.getScene().getWindow();
-        StageManager.showLoginWindow(stage);
-
+        removeObservers();
+        StageManager.showLoginWindow(getStage());
     }
 
     public void handleFriendsWindow(){
-        NotificationHandler.getInstance().removeObserver(this);
-        Stage  stage = (Stage) root.getScene().getWindow();
-        StageManager.showFriendsWindow(stage,usernameLabel.getText());
+        removeObservers();
+        StageManager.showFriendsWindow(getStage(),usernameLabel.getText());
     }
 
     public void handleChatWindow(){
+        removeObservers();
+        StageManager.showChatWindow(getStage(),usernameLabel.getText(),null);
+    }
+    
+    @FXML
+    public void handleEventsWindow(){
+        removeObservers();
+        StageManager.showEventsWindow(getStage(),usernameLabel.getText());
+    }
+
+    private Stage getStage() {
+        return (Stage) root.getScene().getWindow();
+    }
+
+    private void removeObservers(){
         NotificationHandler.getInstance().removeObserver(this);
-        Stage  stage = (Stage) root.getScene().getWindow();
-        StageManager.showChatWindow(stage,usernameLabel.getText(),null);
     }
 
     @FXML
