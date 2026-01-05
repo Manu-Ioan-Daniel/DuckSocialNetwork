@@ -1,9 +1,6 @@
 package utils;
 
-import repo.DbFriendRequestRepo;
-import repo.DbFriendshipRepo;
-import repo.DbMessageRepo;
-import repo.DbUserRepo;
+import repo.*;
 import service.*;
 import validation.IdValidator;
 import validation.UserValidator;
@@ -16,6 +13,7 @@ public class Services {
     private static final MessageService messageService = new MessageService(new DbMessageRepo(),new IdValidator());
     private static final ChatService chatService = new ChatService(usersService,messageService);
     private static final CommunityService communityService = new CommunityService(usersService,friendRequestService,friendshipService);
+    private static final EventService eventService = new EventService(usersService,new DbEventRepo());
 
     public static UsersService getUsersService() {
         return usersService;
@@ -43,5 +41,6 @@ public class Services {
 
     public static ChatService getChatService() { return chatService;}
 
+    public static EventService getEventService() { return eventService;}
 
 }
