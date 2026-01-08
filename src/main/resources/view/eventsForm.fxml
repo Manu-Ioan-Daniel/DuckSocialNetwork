@@ -201,7 +201,7 @@
                <children>
                   <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleRegister" styleClass="bottom-buttons" text="Register" HBox.hgrow="ALWAYS" />
                   <Button layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSendMessage" styleClass="bottom-buttons" text="Send a message" HBox.hgrow="ALWAYS" />
-                  <Button layoutX="116.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="bottom-buttons" text="Start Event" HBox.hgrow="ALWAYS" />
+                  <Button layoutX="116.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleStartEvent" styleClass="bottom-buttons" text="Start Event" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
          </children>

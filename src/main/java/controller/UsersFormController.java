@@ -1,6 +1,6 @@
 package controller;
 
-import models.Notification;
+
 import models.User;
 import enums.ChangeEvent;
 import javafx.collections.FXCollections;
@@ -13,13 +13,10 @@ import javafx.stage.Stage;
 import service.CommunityService;
 import utils.NotificationUtils;
 import utils.Services;
-import utils.StageManager;
 import utils.dtos.UserTableDTO;
 import utils.observer.NotificationHandler;
 import utils.observer.Observer;
 
-import java.util.List;
-import java.util.Objects;
 
 
 

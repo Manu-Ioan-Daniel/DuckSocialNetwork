@@ -15,7 +15,6 @@ import models.User;
 import service.EventService;
 import utils.NotificationUtils;
 import utils.Services;
-import utils.StageManager;
 import utils.dtos.EventSubscriberDTO;
 import utils.observer.NotificationHandler;
 import utils.observer.Observer;
@@ -137,6 +136,20 @@ public class EventsFormController extends BaseController implements Observer {
 
     }
 
+    @FXML
+    private void handleStartEvent(){
+        if(!validEventSelection()) {
+            stageManager.showErrorAlert("You did not select an event to start to!");
+            return;
+        }
+        Event event = getSelectedEvent();
+        try {
+            eventService.startEvent(event);
+        }catch(Exception e){
+            stageManager.showErrorAlert(e.getMessage());
+        }
+    }
+
     private boolean validEventSelection(){
         return eventsTable.getSelectionModel().getSelectedItem() != null;
     }
@@ -156,7 +169,7 @@ public class EventsFormController extends BaseController implements Observer {
 
     @Override
     public void update(ChangeEvent event) {
-        if(event == ChangeEvent.EVENT_SAVED)
+        if(event == ChangeEvent.EVENT_SAVED || event == ChangeEvent.EVENT_DELETED)
             refreshEventsTable();
 
         else if(event == ChangeEvent.USER_DATA || event == ChangeEvent.USER_SUBSCRIBED)

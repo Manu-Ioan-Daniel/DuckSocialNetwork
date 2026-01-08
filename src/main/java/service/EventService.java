@@ -7,6 +7,8 @@ import models.*;
 import repo.DbEventRepo;
 import utils.dtos.EventSubscriberDTO;
 import utils.factories.NotificationFactory;
+import utils.natatie.NatatieDTO;
+import utils.natatie.NatatieSolver;
 import utils.observer.Observable;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,5 +65,36 @@ public class EventService extends Observable {
         for(EventSubscriberDTO subscriber : subscribers){
             notificationService.save(NotificationFactory.getInstance().createNotification(message,subscriber.getUserId()));
         }
+    }
+
+    public void startEvent(Event event) {
+        if (!(event instanceof RaceEvent)) {
+            eventRepo.delete(event.getId());
+            return;
+        }
+
+        List<EventSubscriberDTO> subscribers = getSubscribers(event.getId());
+        if(subscribers.isEmpty()){
+            throw new ServiceException("No subscribers for this event!");
+        }
+
+        List<Duck> ducks = subscribers.stream()
+                .map(sub -> usersService.findOne(sub.getUserId()))
+                .flatMap(Optional::stream)
+                .filter(u -> u instanceof Duck)
+                .map(u -> (Duck) u)
+                .toList();
+
+        String message = "Event finished with result: " + NatatieSolver.solve(new NatatieDTO(ducks)) + " seconds";
+
+        for (EventSubscriberDTO subscriber : subscribers) {
+            notificationService.save(
+                    NotificationFactory.getInstance()
+                            .createNotification(message, subscriber.getUserId())
+            );
+        }
+
+        eventRepo.delete(event.getId());
+        notifyObservers(ChangeEvent.EVENT_DELETED);
     }
 }

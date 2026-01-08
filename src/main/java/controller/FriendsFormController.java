@@ -16,7 +16,6 @@ import javafx.stage.Stage;
 import service.CommunityService;
 import utils.NotificationUtils;
 import utils.Services;
-import utils.StageManager;
 import utils.observer.NotificationHandler;
 import utils.observer.Observer;
 

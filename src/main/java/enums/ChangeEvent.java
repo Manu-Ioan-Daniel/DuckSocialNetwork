@@ -7,6 +7,7 @@ public enum ChangeEvent {
     FRIENDSHIP_DATA,
     MESSAGE_EVENT,
     EVENT_SAVED,
+    EVENT_DELETED,
     USER_SUBSCRIBED,
     NOTIFICATION,
 }
