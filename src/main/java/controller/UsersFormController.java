@@ -1,5 +1,6 @@
 package controller;
 
+import models.Notification;
 import models.User;
 import enums.ChangeEvent;
 import javafx.collections.FXCollections;
@@ -10,16 +11,19 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import service.CommunityService;
+import utils.NotificationUtils;
 import utils.Services;
 import utils.StageManager;
 import utils.dtos.UserTableDTO;
 import utils.observer.NotificationHandler;
 import utils.observer.Observer;
+
+import java.util.List;
 import java.util.Objects;
 
 
 
-public class UsersFormController implements Observer{
+public class UsersFormController extends BaseController implements Observer{
     @FXML
     private BorderPane root;
 
@@ -55,24 +59,20 @@ public class UsersFormController implements Observer{
 
     private CommunityService communityService;
 
-    private User currentUser;
-
     private final static int USERS_PER_PAGE = 3;
 
-    public void initData(String username) {
+    public void initData(User currentUser) {
+        
         this.communityService = Services.getCommunityService();
-        usernameLabel.setText(username);
-        try {
-            communityService.findUser(usernameLabel.getText()).ifPresent(user -> currentUser = user);
-        }catch(Exception e){
-            throw new RuntimeException(e);
-        }
-
+        this.currentUser = currentUser;
+        
+        usernameLabel.setText(currentUser.getUsername());
         NotificationHandler.getInstance().addObserver(this);
 
         initUsersTable();
         loadLabelInfo();
         initPagination();
+        loadNotifications();
     }
 
     private void initPagination() {
@@ -90,14 +90,12 @@ public class UsersFormController implements Observer{
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         usersTableView.setOnMouseClicked(event -> {
             if(event.getClickCount() == 2){
-                StageManager.showProfileWindow((Stage) root.getScene().getWindow(),communityService.findUser(usersTableView.getSelectionModel().getSelectedItem().getUsername()).orElseThrow(),currentUser);
+                stageManager.showProfileWindow((Stage) root.getScene().getWindow(),communityService.findUser(usersTableView.getSelectionModel().getSelectedItem().getUsername()).orElseThrow(),currentUser);
             }
         });
     }
 
-
-
-    public void loadLabelInfo(){
+    private void loadLabelInfo(){
         userCount.setText(Integer.toString(communityService.getTotalUsers()));
         duckCount.setText(Integer.toString(communityService.getTotalDucks()));
         peopleCount.setText(Integer.toString(communityService.getTotalPeople()));
@@ -111,54 +109,26 @@ public class UsersFormController implements Observer{
         usersTableView.setItems(FXCollections.observableList(communityService.findUsersFromPageAsDTO(pageIndex, USERS_PER_PAGE)));
     }
 
-    @FXML
-    public void handleSignout(){
-        StageManager.showConfirmationAlert(this::signout);
-    }
 
-    public void signout(){
-        removeObservers();
-        StageManager.showLoginWindow(getStage());
-    }
-
-    public void handleFriendsWindow(){
-        removeObservers();
-        StageManager.showFriendsWindow(getStage(),usernameLabel.getText());
-    }
-
-    public void handleChatWindow(){
-        removeObservers();
-        StageManager.showChatWindow(getStage(),usernameLabel.getText(),null);
-    }
-    
-    @FXML
-    public void handleEventsWindow(){
-        removeObservers();
-        StageManager.showEventsWindow(getStage(),usernameLabel.getText());
-    }
-
-    private Stage getStage() {
+    @Override
+    protected Stage getStage() {
         return (Stage) root.getScene().getWindow();
     }
 
-    private void removeObservers(){
-        NotificationHandler.getInstance().removeObserver(this);
+    @FXML
+    private void handleAdd(){
+        stageManager.showAddUserWindow();
     }
 
     @FXML
-    public void handleAdd(){
-        StageManager.showAddUserWindow();
-    }
-
-    @FXML
-    public void handleDelete(){
+    private void handleDelete(){
         UserTableDTO selectedUser = usersTableView.getSelectionModel().getSelectedItem();
         if(selectedUser == null){
-            StageManager.showErrorAlert("Please select a user");
+            stageManager.showErrorAlert("Please select a user");
             return;
         }
         if(selectedUser.getUsername().equals(usernameLabel.getText())){
-            StageManager.showErrorAlert("You cannot delete yourself!");
+            stageManager.showErrorAlert("You cannot delete yourself!");
             return;
         }
         communityService.deleteUser(selectedUser.getId());
@@ -166,20 +136,23 @@ public class UsersFormController implements Observer{
 
 
     private void loadNotifications(){
-        if(Objects.equals(communityService.getLastFriendRequest().getId().getSecond(), currentUser.getId()))
-            StageManager.showInformationAlert("You have received a friend request!");
+        String notifications = NotificationUtils.getAndClearNotifications(communityService.getNotifications(currentUser.getId()), (communityService::deleteNotification));
+        if(notifications == null || notifications.isEmpty())
+            return;
+        stageManager.showInformationAlert(notifications);
     }
 
 
     @Override
     public void update(ChangeEvent event){
-        if(ChangeEvent.SENT_FRIEND_REQUEST == event){
-            loadNotifications();
-        }
-        else if(ChangeEvent.USER_DATA == event){
+
+        if(ChangeEvent.USER_DATA == event){
             loadLabelInfo();
             loadPaginationPageCount();
             refreshUsersTable(pagination.getCurrentPageIndex());
+        }
+        else if(ChangeEvent.NOTIFICATION == event){
+            loadNotifications();
         }
     }
 

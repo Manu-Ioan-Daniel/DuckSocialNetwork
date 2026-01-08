@@ -25,11 +25,11 @@ public class ConfirmationAlertController implements Initializable {
     private Button yesBtn;
 
     @FXML
-    void noAction() {
+    private void noAction() {
         ((Stage) noBtn.getScene().getWindow()).close();
     }
     @FXML
-    void yesAction() {
+    private void yesAction() {
         action.run();
         ((Stage) yesBtn.getScene().getWindow()).close();
     }

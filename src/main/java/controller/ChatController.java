@@ -9,7 +9,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import models.User;
 import service.ChatService;
+import utils.NotificationUtils;
 import utils.Services;
 import utils.StageManager;
 import utils.UiChatUtils;
@@ -17,7 +19,7 @@ import utils.observer.NotificationHandler;
 import utils.observer.Observer;
 
 
-public class ChatController implements Observer {
+public class ChatController extends BaseController implements Observer {
 
     @FXML
     private BorderPane root;
@@ -44,12 +46,18 @@ public class ChatController implements Observer {
     private Message repliedToMessage;
     private ChatService chatService;
 
-    public void initData(String username) {
+    public void initData(User currentUser) {
         this.chatService = Services.getChatService();
-        usernameLabel.setText(username);
-        NotificationHandler.getInstance().addObserver(this);
-        messagesScrollPane.vvalueProperty().bind(messagesBox.heightProperty());
+        this.currentUser = currentUser;
+
+        usernameLabel.setText(currentUser.getUsername());
         loadUsernames();
+
+        NotificationHandler.getInstance().addObserver(this);
+
+        messagesScrollPane.vvalueProperty().bind(messagesBox.heightProperty());
+
+
     }
 
     private void loadUsernames(){
@@ -63,8 +71,17 @@ public class ChatController implements Observer {
         replyMessageLabel.setVisible(false);
     }
 
+
+    private void loadNotifications() {
+        String notifications = NotificationUtils.getAndClearNotifications(chatService.getNotifications(currentUser.getId()),chatService::deleteNotification);
+        if(notifications == null || notifications.isEmpty())
+            return;
+        stageManager.showInformationAlert(notifications);
+    }
+
+
     @FXML
-    public void sendMessage(){
+    private void sendMessage(){
         if(messageField.getText().isEmpty()){
             return;
         }
@@ -79,47 +96,25 @@ public class ChatController implements Observer {
     }
 
 
-    @FXML
-    public void handleSignout(){
-        StageManager.showConfirmationAlert(this::signout);
+    public void setRepliedToMessage(Message message){
+        repliedToMessage = message;
+        replyMessageLabel.setText("Replying to : " + message.getMessage());
+        replyMessageLabel.setVisible(true);
+        scrollToBottom();
     }
 
-    private void signout() {
-        NotificationHandler.getInstance().removeObserver(this);
-        StageManager.showLoginWindow(getStage());
-    }
-
-    private Stage getStage() {
-        return (Stage) root.getScene().getWindow();
-    }
-
-    @FXML
-    public void handleUsersWindow(){
-        NotificationHandler.getInstance().removeObserver(this);
-        StageManager.showUsersWindow(getStage(),usernameLabel.getText());
-    }
-
-    @FXML
-    public void handleFriendsWindow(){
-        NotificationHandler.getInstance().removeObserver(this);
-        StageManager.showFriendsWindow(getStage(),usernameLabel.getText());
+    public void setSelectedUser(String username2) {
+        UiChatUtils.setSelectedUsername(usernamesBox,username2);
+        loadConversation();
     }
 
     private String getSelectedUsername(){
         return UiChatUtils.getSelectedUsername(usernamesBox);
     }
 
-    private void loadNotifications(){
-        if(chatService.getLastFriendRequest().getId().getSecond().equals(chatService.getUser(usernameLabel.getText()).getId())){
-            StageManager.showInformationAlert("You just received a friend request!");
-        }
-    }
-
-    public void setRepliedToMessage(Message message){
-        repliedToMessage = message;
-        replyMessageLabel.setText("Replying to : " + message.getMessage());
-        replyMessageLabel.setVisible(true);
-        scrollToBottom();
+    @Override
+    protected Stage getStage() {
+        return (Stage) root.getScene().getWindow();
     }
 
     private void scrollToBottom(){
@@ -135,13 +130,12 @@ public class ChatController implements Observer {
             loadConversation();
         }else if(event.equals(ChangeEvent.MESSAGE_EVENT)){
             loadConversation();
-        }else if(event.equals(ChangeEvent.SENT_FRIEND_REQUEST)){
+        }
+        else if(event.equals(ChangeEvent.NOTIFICATION)){
             loadNotifications();
         }
     }
 
-    public void setSelectedUser(String username2) {
-        UiChatUtils.setSelectedUsername(usernamesBox,username2);
-        loadConversation();
-    }
+
+
 }

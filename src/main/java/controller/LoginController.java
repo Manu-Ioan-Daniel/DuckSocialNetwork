@@ -7,6 +7,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import models.User;
 import service.SecurityService;
 import utils.Services;
 import utils.StageManager;
@@ -30,10 +31,10 @@ public class LoginController implements Initializable {
     private Button loginBtn;
 
     private SecurityService securityService;
-
+    private StageManager stageManager;
 
     @FXML
-    public void login(){
+    private void login(){
         String username = usernameField.getText();
         String password = passwordField.getText();
         if(!securityService.validLogin(username,password)){
@@ -41,13 +42,19 @@ public class LoginController implements Initializable {
             UiUtils.addTemporaryStylesheet(passwordField,"text-field-error");
             return;
         }
-        StageManager.showUsersWindow((Stage) root.getScene().getWindow(),username);
+        User currentUser = securityService.getUser(username).orElse(null);
+        if(currentUser == null){
+            UiUtils.addTemporaryStylesheet(usernameField,"text-field-error");
+            return;
+        }
+        stageManager.showUsersWindow((Stage) root.getScene().getWindow(),currentUser);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loginBtn.setDefaultButton(true);
         this.securityService = Services.getSecurityService();
+        this.stageManager = new StageManager();
     }
 
 }

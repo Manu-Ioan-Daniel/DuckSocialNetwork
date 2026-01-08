@@ -1,3 +1,30 @@
+CREATE TABLE users(
+	id SERIAL PRIMARY KEY,
+	username VARCHAR(100) NOT NULL UNIQUE,
+	password VARCHAR(100) NOT NULL,
+	email VARCHAR(100) NOT NULL UNIQUE,
+	type VARCHAR(100) NOT NULL,
+	CHECK (type IN ('duck', 'person'))
+);
+
+CREATE TABLE ducks(
+	id BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+	type VARCHAR(100) NOT NULL,
+	CHECK (type IN ('FLYING','SWIMMING')),
+	speed BIGINT NOT NULL,
+	resistance BIGINT NOT NULL
+);
+
+CREATE TABLE people(
+	id BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+	name VARCHAR(100) NOT NULL,
+	surname VARCHAR(100) NOT NULL,
+	date_of_birth TIMESTAMP NOT NULL,
+	occupation VARCHAR(100) NOT NULL,
+	empathy_level BIGINT NOT NULL,
+	CHECK (empathy_level BETWEEN 0 AND 10)
+);
+
 CREATE TABLE friendships(
 	user_id_1 BIGINT REFERENCES users(id) ON DELETE CASCADE,
 	user_id_2 BIGINT REFERENCES users(id) ON DELETE CASCADE,
@@ -42,3 +69,4 @@ CREATE TABLE event_members(
 	event_id BIGINT NOT NULL REFERENCES events(id) ON DELETE CASCADE,
 	PRIMARY KEY (user_id,event_id)
 );
+

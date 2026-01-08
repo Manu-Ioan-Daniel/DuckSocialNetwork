@@ -1,9 +1,12 @@
 package enums;
 
+
 public enum ChangeEvent {
     USER_DATA,
-    SENT_FRIEND_REQUEST,
     FRIEND_REQUEST_DATA,
     FRIENDSHIP_DATA,
-    MESSAGE_EVENT
+    MESSAGE_EVENT,
+    EVENT_SAVED,
+    USER_SUBSCRIBED,
+    NOTIFICATION,
 }

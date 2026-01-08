@@ -14,12 +14,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import service.CommunityService;
+import utils.NotificationUtils;
 import utils.Services;
 import utils.StageManager;
 import utils.observer.NotificationHandler;
 import utils.observer.Observer;
 
-public class FriendsFormController implements Observer {
+public class FriendsFormController extends BaseController implements Observer {
 
     @FXML
     private Button friendReqBtn;
@@ -64,20 +65,15 @@ public class FriendsFormController implements Observer {
     private Label usernameLabel;
 
     private CommunityService communityService;
+    
 
-    private User currentUser;
-
-    public void initData(String username)
+    public void initData(User currentUser)
     {
-        usernameLabel.setText(username);
 
         this.communityService = Services.getCommunityService();
-        communityService.findUser(username)
-                .ifPresentOrElse(
-                        user -> currentUser = user,
-                        () -> { throw new RuntimeException("Current user not found!"); }
-                );
+        this.currentUser = currentUser;
 
+        usernameLabel.setText(currentUser.getUsername());
 
         NotificationHandler.getInstance().addObserver(this);
 
@@ -109,6 +105,11 @@ public class FriendsFormController implements Observer {
                 friendReqBtn.setVisible(false);
             }
         });
+    }
+
+    @Override
+    protected Stage getStage(){
+        return (Stage) root.getScene().getWindow();
     }
 
     private void initToFriendReqTable() {
@@ -143,7 +144,7 @@ public class FriendsFormController implements Observer {
         try {
             action.run();
         } catch (Exception e) {
-            StageManager.showErrorAlert(e.getMessage());
+            stageManager.showErrorAlert(e.getMessage());
         }
     }
 
@@ -152,9 +153,9 @@ public class FriendsFormController implements Observer {
     }
 
     @FXML
-    public void removeFriend() {
+    private void removeFriend() {
         if (!validSelection(friendsTable)) {
-            StageManager.showErrorAlert("You did not select any friend to remove!");
+            stageManager.showErrorAlert("You did not select any friend to remove!");
             return;
         }
         runSafe(() -> {
@@ -165,9 +166,9 @@ public class FriendsFormController implements Observer {
     }
 
     @FXML
-    public void friendRequest() {
+    private void friendRequest() {
         if (!validSelection(othersTable)) {
-            StageManager.showErrorAlert("You did not select any user to send a friend request to!");
+            stageManager.showErrorAlert("You did not select any user to send a friend request to!");
             return;
         }
         User user = othersTable.getSelectionModel().getSelectedItem();
@@ -175,9 +176,9 @@ public class FriendsFormController implements Observer {
     }
 
     @FXML
-    public void cancelFriendRequest() {
+    private void cancelFriendRequest() {
         if (!validSelection(toFriendReqTable)) {
-            StageManager.showErrorAlert("You did not select any friend request to cancel!");
+            stageManager.showErrorAlert("You did not select any friend request to cancel!");
             return;
         }
         FriendRequest fr = toFriendReqTable.getSelectionModel().getSelectedItem();
@@ -185,9 +186,9 @@ public class FriendsFormController implements Observer {
     }
 
     @FXML
-    public void acceptFriendRequest() {
+    private void acceptFriendRequest() {
         if (!validSelection(fromFriendReqTable)) {
-            StageManager.showErrorAlert("You did not select any friend request to accept!");
+            stageManager.showErrorAlert("You did not select any friend request to accept!");
             return;
         }
         FriendRequest fr = fromFriendReqTable.getSelectionModel().getSelectedItem();
@@ -195,46 +196,21 @@ public class FriendsFormController implements Observer {
     }
 
     @FXML
-    public void denyFriendRequest() {
+    private void denyFriendRequest() {
         if (!validSelection(fromFriendReqTable)) {
-            StageManager.showErrorAlert("You did not select any friend request to deny!");
+            stageManager.showErrorAlert("You did not select any friend request to deny!");
             return;
         }
         FriendRequest fr = fromFriendReqTable.getSelectionModel().getSelectedItem();
         runSafe(() -> communityService.denyFriendRequest(fr));
     }
 
-    @FXML
-    public void handleSignout() {
-        StageManager.showConfirmationAlert(this::signout);
-    }
 
-    private void signout() {
-        removeObservers();
-        StageManager.showLoginWindow(getStage());
-    }
-    @FXML
-    public void handleUsersWindow() {
-        removeObservers();
-        StageManager.showUsersWindow(getStage(), usernameLabel.getText());
-    }
-    @FXML
-    public void handleChatWindow() {
-        removeObservers();
-        StageManager.showChatWindow(getStage(), usernameLabel.getText(),null);
-    }
-    @FXML
-    public void handleEventsWindow(){
-        removeObservers();
-        StageManager.showEventsWindow(getStage(),usernameLabel.getText());
-    }
-
-    private Stage getStage() {
-        return (Stage) root.getScene().getWindow();
-    }
-
-    private void removeObservers(){
-        NotificationHandler.getInstance().removeObserver(this);
+    private void loadNotifications() {
+        String notification = NotificationUtils.getAndClearNotifications(communityService.getNotifications(currentUser.getId()),communityService::deleteNotification);
+        if(notification == null || notification.isEmpty())
+            return;
+        stageManager.showInformationAlert(notification);
     }
 
     @Override
@@ -243,10 +219,14 @@ public class FriendsFormController implements Observer {
             refreshFriendsTable();
             refreshOthersTable();
         }
-        else if(event == ChangeEvent.SENT_FRIEND_REQUEST || event == ChangeEvent.FRIEND_REQUEST_DATA) {
+        else if(event == ChangeEvent.FRIEND_REQUEST_DATA) {
             refreshOthersTable();
             refreshToFriendReqTable();
             refreshFromFriendReqTable();
         }
+        else if(event == ChangeEvent.NOTIFICATION){
+            loadNotifications();
+        }
     }
+
 }

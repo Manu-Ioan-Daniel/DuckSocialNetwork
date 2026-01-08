@@ -151,6 +151,7 @@
                   <TableView fx:id="eventsTable" prefHeight="300.0" HBox.hgrow="ALWAYS">
                     <columns>
                       <TableColumn fx:id="eventsColumn" prefWidth="75.0" text="Events" />
+                        <TableColumn fx:id="typeColumn" prefWidth="75.0" text="Type" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -167,7 +168,7 @@
                   </TableView>
                </children>
             </HBox>
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="50.0" styleClass="bottom-buttons" text="Add Event" VBox.vgrow="ALWAYS" />
+            <Button fx:id="addEventBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleAdd" prefHeight="50.0" styleClass="bottom-buttons" text="Add Event" VBox.vgrow="ALWAYS" />
             <HBox alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="ALWAYS">
                <children>
                   <ImageView fitHeight="150.0" fitWidth="191.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
@@ -198,8 +199,8 @@
             </HBox>
             <HBox alignment="BOTTOM_CENTER" layoutX="20.0" layoutY="440.0" spacing="5.0">
                <children>
-                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="bottom-buttons" text="Register" HBox.hgrow="ALWAYS" />
-                  <Button layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="bottom-buttons" text="Send a message" HBox.hgrow="ALWAYS" />
+                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleRegister" styleClass="bottom-buttons" text="Register" HBox.hgrow="ALWAYS" />
+                  <Button layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSendMessage" styleClass="bottom-buttons" text="Send a message" HBox.hgrow="ALWAYS" />
                   <Button layoutX="116.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="bottom-buttons" text="Start Event" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>

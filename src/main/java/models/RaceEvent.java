@@ -1,11 +1,7 @@
 package models;
 
-public class RaceEvent extends Entity<Long> {
-    private final String name;
+public class RaceEvent extends Event {
     public RaceEvent(String name){
-        this.name = name;
-    }
-    public String getName(){
-        return name;
+        super(name);
     }
 }

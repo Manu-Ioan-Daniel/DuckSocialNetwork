@@ -23,4 +23,7 @@ public class SecurityService {
             throw new RuntimeException(e);
         }
     }
+    public Optional<User> getUser(String username){
+        return usersService.findOne(username);
+    }
 }

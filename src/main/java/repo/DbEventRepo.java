@@ -1,18 +1,20 @@
 package repo;
 
 import exceptions.RepoException;
+import models.Event;
 import models.RaceEvent;
 import utils.DbConnection;
+import utils.dtos.EventSubscriberDTO;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class DbEventRepo implements Repository<Long, RaceEvent> {
+public class DbEventRepo implements Repository<Long, Event> {
     private final Connection connection = DbConnection.getInstance().getConnection();
 
 
     @Override
-    public Optional<RaceEvent> findOne(Long id) {
+    public Optional<Event> findOne(Long id) {
         String sql = """
         SELECT * FROM events
         WHERE id = ?
@@ -31,7 +33,7 @@ public class DbEventRepo implements Repository<Long, RaceEvent> {
         return Optional.empty();
     }
 
-    private RaceEvent eventFromResultSet(ResultSet rs) throws SQLException {
+    private Event eventFromResultSet(ResultSet rs) throws SQLException {
         Long id = rs.getLong(1);
         String name = rs.getString(2);
         RaceEvent event = new RaceEvent(name);
@@ -40,11 +42,11 @@ public class DbEventRepo implements Repository<Long, RaceEvent> {
     }
 
     @Override
-    public Iterable<RaceEvent> findAll() {
+    public Iterable<Event> findAll() {
         String sql = """
                 SELECT * FROM events
                 """;
-        Set<RaceEvent> raceEvents = new HashSet<>();
+        Set<Event> raceEvents = new HashSet<>();
         try(PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()){
             while(rs.next()){
                 raceEvents.add(eventFromResultSet(rs));
@@ -56,7 +58,7 @@ public class DbEventRepo implements Repository<Long, RaceEvent> {
     }
 
     @Override
-    public void save(RaceEvent entity) {
+    public void save(Event entity) {
         String sql = """
                 INSERT INTO events(name)
                 VALUES (?)
@@ -65,6 +67,8 @@ public class DbEventRepo implements Repository<Long, RaceEvent> {
             ps.setString(1, entity.getName());
             ps.executeUpdate();
         }catch(SQLException e){
+            if(e.getSQLState().equals("23015"))
+                throw new RepoException("Event with that name already exists");
             throw  new RuntimeException(e);
         }
     }
@@ -85,14 +89,11 @@ public class DbEventRepo implements Repository<Long, RaceEvent> {
 
 
     @Override
-    public void update(RaceEvent entity) {
+    public void update(Event entity) {
 
     }
 
     public void addSubscriber(Long eventId,Long subscriberId){
-        if(getSubscribers(eventId).contains(subscriberId)){
-            throw new RepoException("User is already subscribed to this event!");
-        }
         String sql = """
                 INSERT INTO event_members(user_id,event_id,date)
                 VALUES (?, ?, ?)
@@ -103,21 +104,24 @@ public class DbEventRepo implements Repository<Long, RaceEvent> {
             ps.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
             ps.executeUpdate();
         }catch(SQLException e){
+            if(e.getSQLState().equals("23505")){
+                throw new RepoException("User is already registered to this event!");
+            }
             throw new RuntimeException(e);
         }
     }
 
-    public List<Long> getSubscribers(Long eventId){
+    public List<EventSubscriberDTO> getSubscribers(Long eventId){
         String sql = """
-                SELECT user_id from event_members
+                SELECT user_id,date from event_members
                 WHERE event_id = ?
                 """;
-        List<Long> subscribers = new ArrayList<>();
+        List<EventSubscriberDTO> subscribers = new ArrayList<>();
         try(PreparedStatement ps = connection.prepareStatement(sql)){
             ps.setLong(1,eventId);
             try(ResultSet rs = ps.executeQuery()){
                 while(rs.next()){
-                    subscribers.add(rs.getLong(1));
+                    subscribers.add(new EventSubscriberDTO(rs.getLong(1),rs.getTimestamp(2).toLocalDateTime()));
                 }
             }
         }catch(SQLException e){

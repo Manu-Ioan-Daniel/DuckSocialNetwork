@@ -67,14 +67,21 @@ public class AddUserFormController implements Initializable {
     private TextField usernameField;
 
     private UsersService usersService;
+    private StageManager stageManager;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         duckFieldsVBox.setVisible(false);
         personFieldsVBox.setVisible(true);
+
         this.usersService = Services.getUsersService();
+        this.stageManager = new StageManager();
+
         date.setValue(LocalDate.now());
+
         DraggableUtil.makeDraggable(root);
+
         initTypeComboBox();
         initDuckTypeComboBox();
 
@@ -98,7 +105,7 @@ public class AddUserFormController implements Initializable {
     }
 
     @FXML
-    public void handleAdd() {
+    private void handleAdd() {
         if(!validInput()){
             return;
         }
@@ -106,12 +113,12 @@ public class AddUserFormController implements Initializable {
             usersService.save(getUser());
             ((Stage)root.getScene().getWindow()).close();
         }catch(Exception ex){
-            StageManager.showErrorAlert(ex.getMessage());
+            stageManager.showErrorAlert(ex.getMessage());
         }
     }
 
     @FXML
-    public void handleClose() {
+    private void handleClose() {
         ((Stage) root.getScene().getWindow()).close();
     }
 

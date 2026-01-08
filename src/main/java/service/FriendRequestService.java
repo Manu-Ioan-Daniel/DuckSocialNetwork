@@ -15,7 +15,6 @@ import java.util.Optional;
 public class FriendRequestService extends Observable {
 
     private final DbFriendRequestRepo friendRequestRepo;
-    private FriendRequest lastFriendRequestSaved;
     private final Validator<Long> idValidator;
     
 
@@ -52,8 +51,7 @@ public class FriendRequestService extends Observable {
             throw new ValidationException("Invalid request");
         }
         friendRequestRepo.save(friendRequest);
-        lastFriendRequestSaved = friendRequest;
-        notifyObservers(ChangeEvent.SENT_FRIEND_REQUEST);
+        notifyObservers(ChangeEvent.FRIEND_REQUEST_DATA);
     }
     public void delete(Long id1, Long id2){
         idValidator.validate(id1);
@@ -66,16 +64,7 @@ public class FriendRequestService extends Observable {
             throw new ValidationException("Invalid request");
         }
         friendRequestRepo.update(friendRequest);
-        if("pending".equals(friendRequest.getStatus())){
-            lastFriendRequestSaved = friendRequest;
-            notifyObservers(ChangeEvent.SENT_FRIEND_REQUEST);
-            return;
-        }
         notifyObservers(ChangeEvent.FRIEND_REQUEST_DATA);
-    }
-
-    public FriendRequest getLastFriendRequest() {
-        return lastFriendRequestSaved;
     }
 
 }

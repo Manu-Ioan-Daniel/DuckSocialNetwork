@@ -46,6 +46,7 @@ public class UserProfileController implements Observer {
     private User loggedInUser;
 
     private Stage parentStage;
+    private StageManager stageManager;
 
     public void initData(Stage parentStage, User user, User loggedInUser){
 
@@ -54,6 +55,7 @@ public class UserProfileController implements Observer {
         this.currentUser = user;
         this.parentStage = parentStage;
         this.loggedInUser = loggedInUser;
+        this.stageManager = new StageManager();
 
         root.sceneProperty().addListener((observable, oldScene, newScene) -> {
             if(newScene == null){
@@ -92,28 +94,28 @@ public class UserProfileController implements Observer {
     }
 
     @FXML
-    public void handleFriendReq(){
+    private void handleFriendReq(){
         try {
             communityService.saveFriendRequest(loggedInUser.getId(), currentUser.getId());
         }catch (Exception e){
-            StageManager.showErrorAlert(e.getMessage());
+            stageManager.showErrorAlert(e.getMessage());
         }
     }
 
     @FXML
-    public void handleChatBtn(){
+    private void handleChatBtn(){
         if(loggedInUser.getId().equals(currentUser.getId())){
-            StageManager.showErrorAlert("You cannot chat with yourself!Make some friends :(!");
+            stageManager.showErrorAlert("You cannot chat with yourself!Make some friends :(!");
             return;
         }
-        StageManager.showChatWindow(parentStage,loggedInUser.getUsername(), currentUser.getUsername());
+        stageManager.showChatWindow(parentStage,loggedInUser, currentUser.getUsername());
     }
 
     @Override
     public void update(ChangeEvent event) {
         if(ChangeEvent.MESSAGE_EVENT == event){
             loadMessagesLabel();
-        }else if(ChangeEvent.FRIENDSHIP_DATA == event || ChangeEvent.SENT_FRIEND_REQUEST == event || ChangeEvent.FRIEND_REQUEST_DATA == event){
+        }else if(ChangeEvent.FRIENDSHIP_DATA == event || ChangeEvent.FRIEND_REQUEST_DATA == event){
             loadFriendsLabel();
             loadFriendReqBtnImage();
         }else if (ChangeEvent.USER_DATA == event){

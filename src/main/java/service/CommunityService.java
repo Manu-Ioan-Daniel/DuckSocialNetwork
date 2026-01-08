@@ -1,22 +1,27 @@
 package service;
 
 import models.FriendRequest;
+import models.Notification;
 import models.User;
 import exceptions.ServiceException;
 import utils.dtos.UserTableDTO;
 import utils.factories.FriendRequestFactory;
 import utils.factories.FriendShipFactory;
+import utils.factories.NotificationFactory;
+
 import java.util.*;
 
 public class CommunityService {
     private final UsersService usersService;
     private final FriendRequestService friendRequestService;
     private final FriendshipService friendshipService;
+    private final NotificationService notificationService;
 
-    public CommunityService(UsersService usersService, FriendRequestService friendRequestService, FriendshipService friendshipService) {
+    public CommunityService(UsersService usersService, FriendRequestService friendRequestService, FriendshipService friendshipService, NotificationService notificationService) {
         this.usersService = usersService;
         this.friendRequestService = friendRequestService;
         this.friendshipService = friendshipService;
+        this.notificationService = notificationService;
     }
 
     public Optional<User> findUser(String username){
@@ -71,6 +76,10 @@ public class CommunityService {
         friendRequestService.delete(id1, id2);
     }
 
+    public void deleteNotification(Long id) {
+        notificationService.delete(id);
+    }
+
     public void cancelFriendRequest(FriendRequest fr) {
         if(!fr.getStatus().equals("pending")){
             throw new ServiceException("You cannot cancel friend requests that are not pending!");
@@ -99,10 +108,8 @@ public class CommunityService {
         }
         return usersService.getAllUsersExcept(ids);
     }
-
-
-    public FriendRequest getLastFriendRequest() {
-        return friendRequestService.getLastFriendRequest();
+    public List<Notification> getNotifications(Long id) {
+        return notificationService.getNotifications(id);
     }
 
 
@@ -115,6 +122,7 @@ public class CommunityService {
         Optional<FriendRequest> fr = friendRequestService.findOne(currentUserId, targetId);
         if(fr.isEmpty()){
             friendRequestService.save(FriendRequestFactory.getInstance().createFriendRequest(currentUserId, targetId, "pending"));
+            saveFriendRequestNotification(currentUserId,targetId);
             return;
         }
         FriendRequest friendRequest = fr.get();
@@ -124,11 +132,20 @@ public class CommunityService {
         if(friendRequest.getId().getFirst().equals(currentUserId)) {
             friendRequest.setStatus("pending");
             friendRequestService.update(friendRequest);
+            saveFriendRequestNotification(currentUserId,targetId);
             return;
         }
         friendRequestService.delete(currentUserId, targetId);
         friendRequestService.save(FriendRequestFactory.getInstance().createFriendRequest(currentUserId, targetId, "pending"));
+        saveFriendRequestNotification(currentUserId,targetId);
+    }
 
+    private void saveFriendRequestNotification(Long currentUserId, Long targetId) {
+        User currentUser = usersService.findOne(currentUserId).orElse(null);
+        if(currentUser == null){
+            return;
+        }
+        notificationService.save(NotificationFactory.getInstance().createNotification("You have received a friend request from : " + currentUser.getUsername(),targetId));
     }
 
 
@@ -152,4 +169,5 @@ public class CommunityService {
     public Optional<FriendRequest> findFriendRequest(Long id1, Long id2) {
         return friendRequestService.findOne(id1, id2);
     }
+
 }

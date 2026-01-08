@@ -12,7 +12,8 @@ public class NotificationHandler extends Observable implements Observer {
         Services.getFriendshipService().addObserver(this);
         Services.getFriendRequestService().addObserver(this);
         Services.getMessageService().addObserver(this);
-
+        Services.getEventService().addObserver(this);
+        Services.getNotificationService().addObserver(this);
     }
 
     public static NotificationHandler getInstance() {

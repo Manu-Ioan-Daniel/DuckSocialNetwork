@@ -18,7 +18,7 @@ public class InformationAlertController implements Initializable {
     private VBox root;
 
     @FXML
-    void handleOk() {
+    private void handleOk() {
         ((Stage)root.getScene().getWindow()).close();
     }
 

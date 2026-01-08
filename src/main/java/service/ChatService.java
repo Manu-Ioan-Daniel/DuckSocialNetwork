@@ -9,9 +9,12 @@ import java.util.Optional;
 public class ChatService{
     private final MessageService messageService;
     private final UsersService usersService;
-    public ChatService(UsersService usersService, MessageService messageService) {
+    private final NotificationService notificationsService;
+
+    public ChatService(UsersService usersService, MessageService messageService, NotificationService notificationsService) {
         this.usersService = usersService;
         this.messageService = messageService;
+        this.notificationsService = notificationsService;
     }
 
     public List<String> getUsernames(){
@@ -20,9 +23,6 @@ public class ChatService{
                 .toList();
     }
 
-    public FriendRequest getLastFriendRequest(){
-        return Services.getFriendRequestService().getLastFriendRequest();
-    }
 
     public User getUser(String username){
         Optional<User> user =  usersService.findOne(username);
@@ -75,6 +75,14 @@ public class ChatService{
 
     public int getMessageCount(Long id) {
         return messageService.getMessageCount(id);
+    }
+
+    public List<Notification> getNotifications(Long id) {
+        return notificationsService.getNotifications(id);
+    }
+
+    public void deleteNotification(Long id) {
+        notificationsService.delete(id);
     }
 }
 
