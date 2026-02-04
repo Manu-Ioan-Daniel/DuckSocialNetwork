@@ -4,6 +4,7 @@ A desktop *social network* app (users can be a **Duck** or  a **Person**), built
 
 > Project: `DuckSocialNetwork` (Gradle) • UI: FXML + CSS • JavaFX 17
 
+![img.png](img.png)
 ---
 
 
