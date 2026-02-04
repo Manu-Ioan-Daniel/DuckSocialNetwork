@@ -1,6 +1,5 @@
 package controller;
 
-
 import models.User;
 import enums.ChangeEvent;
 import javafx.collections.FXCollections;
@@ -16,8 +15,6 @@ import utils.Services;
 import utils.dtos.UserTableDTO;
 import utils.observer.NotificationHandler;
 import utils.observer.Observer;
-
-
 
 
 public class UsersFormController extends BaseController implements Observer{

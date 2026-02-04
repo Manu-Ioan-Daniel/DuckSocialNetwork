@@ -6,6 +6,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import models.Event;
 import models.User;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -128,5 +130,13 @@ public class StageManager {
             stage.setScene(tuple.getFirst());
             return stage;
         });
+    }
+
+    public static void openLoginWindow() throws IOException {
+        Tuple<Scene, LoginController> tuple = FXMLUtil.load(("/view/loginWindow.fxml"));
+        Scene scene = tuple.getFirst();
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.show();
     }
 }

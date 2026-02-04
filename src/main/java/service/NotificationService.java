@@ -4,7 +4,6 @@ import enums.ChangeEvent;
 import models.Notification;
 import repo.DbNotificationRepo;
 import utils.observer.Observable;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +27,4 @@ public class NotificationService extends Observable {
         repo.findUserNotifications(id).forEach(notifications::add);
         return notifications;
     }
-
-
 }

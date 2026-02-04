@@ -3,7 +3,6 @@ package repo;
 import exceptions.RepoException;
 import models.Notification;
 import utils.DbConnection;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,7 +13,7 @@ import java.util.Set;
 
 public class DbNotificationRepo implements Repository<Long, Notification> {
 
-    private Connection connection = DbConnection.getInstance().getConnection();
+    private final Connection connection = DbConnection.getInstance().getConnection();
     public DbNotificationRepo() {
 
     }
@@ -64,15 +63,15 @@ public class DbNotificationRepo implements Repository<Long, Notification> {
         return notifications;
     }
 
-    public Iterable<Notification> findUserNotifications(Long userId){
+    public Iterable<Notification> findUserNotifications(Long toId){
         String sql = """
                 SELECT *
                 FROM notifications
-                WHERE user_id = ?
+                WHERE to_id = ?
         """;
         Set<Notification> notifications = new HashSet<>();
         try(PreparedStatement ps =connection.prepareStatement(sql)){
-            ps.setLong(1, userId);
+            ps.setLong(1, toId);
             try(ResultSet rs = ps.executeQuery()){
                 while(rs.next()){
                     notifications.add(notificationFromResultSet(rs));

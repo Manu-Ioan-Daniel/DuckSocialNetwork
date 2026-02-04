@@ -56,5 +56,4 @@ public class LoginController implements Initializable {
         this.securityService = Services.getSecurityService();
         this.stageManager = new StageManager();
     }
-
 }

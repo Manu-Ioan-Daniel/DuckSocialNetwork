@@ -2,12 +2,12 @@ package service;
 
 import models.User;
 import utils.passwords.PasswordHasher;
-
 import java.util.Optional;
 
-public class SecurityService {
-    private final UsersService usersService;
 
+public class SecurityService {
+
+    private final UsersService usersService;
     public SecurityService(UsersService usersService) {
         this.usersService = usersService;
     }
