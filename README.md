@@ -5,6 +5,9 @@ A desktop *social network* app (users can be a **Duck** or  a **Person**), built
 > Project: `DuckSocialNetwork` (Gradle) • UI: FXML + CSS • JavaFX 17
 
 ![img.png](img.png)
+
+![12345online-video-cutter com1-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/2bb02beb-81b6-4f9b-9ad3-a610d76e6745)
+
 ---
 
 
